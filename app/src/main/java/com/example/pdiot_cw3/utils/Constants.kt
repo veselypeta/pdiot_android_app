@@ -1,6 +1,10 @@
 package com.example.pdiot_cw3.utils
 
-const val PREFERENCES_FILE = "com.specknet.pdiotapp.PREFERENCE_FILE"
-const val PREF_USER_FIRST_TIME = "user_first_time"
-const val REQUEST_CODE_PERMISSIONS = 4
-const val RESPEK_VERSION = 1
+object Constants
+{
+    const val PREFERENCES_FILE = "com.specknet.pdiotapp.PREFERENCE_FILE"
+    const val REQUEST_CODE_PERMISSIONS = 4
+    const val RESPECK_VERSION = "respeck_version"
+    const val RESPECK_MAC_ADDRESS_PREF = "respeck_id_pref"
+    const val RESPECK_CHARACTERISTIC_UUID = "00001524-1212-efde-1523-785feabcd125"
+}

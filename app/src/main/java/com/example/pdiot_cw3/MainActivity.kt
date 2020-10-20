@@ -10,8 +10,7 @@ import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import com.example.pdiot_cw3.bluetooth.ConnectBluetoth
-import com.example.pdiot_cw3.utils.REQUEST_CODE_PERMISSIONS
-
+import com.example.pdiot_cw3.utils.Constants
 
 
 class MainActivity : AppCompatActivity() {
@@ -101,7 +100,7 @@ class MainActivity : AppCompatActivity() {
         if (permissionsForRequest.size >= 1) {
             ActivityCompat.requestPermissions(this,
                     permissionsForRequest.toTypedArray(),
-                    REQUEST_CODE_PERMISSIONS)
+                    Constants.REQUEST_CODE_PERMISSIONS)
         }
     }
 

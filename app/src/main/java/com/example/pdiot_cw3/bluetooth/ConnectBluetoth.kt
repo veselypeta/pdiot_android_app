@@ -6,12 +6,13 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import com.example.pdiot_cw3.R
-import com.example.pdiot_cw3.utils.PREFERENCES_FILE
+import com.example.pdiot_cw3.utils.Constants
 import com.polidea.rxandroidble2.RxBleClient
 import com.polidea.rxandroidble2.exceptions.BleException
 import io.reactivex.exceptions.UndeliverableException
@@ -27,15 +28,13 @@ class ConnectBluetoth : AppCompatActivity() {
 
     lateinit var rxBleClient: RxBleClient
 
-    private var respekMAC = ""
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_connect_bluetoth)
 
         // fetch shared preferences
-        sharedPreferences = getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences(Constants.PREFERENCES_FILE, Context.MODE_PRIVATE)
 
         // get respek mac
         macInput = findViewById(R.id.respeck_code)
@@ -53,7 +52,7 @@ class ConnectBluetoth : AppCompatActivity() {
             throw RuntimeException("Unexpected Throwable in RxJavaPlugins error handler", throwable)
         }
 
-        // disable connect button unless mac is correct length
+        // disable connect button unless mac is correct length - make all caps too
         macInput.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -73,9 +72,16 @@ class ConnectBluetoth : AppCompatActivity() {
 
             }
         })
+        macInput.filters = arrayOf<InputFilter>(InputFilter.AllCaps())
 
 
         connectButton.setOnClickListener{
+
+            sharedPreferences.edit().putString(
+                Constants.RESPECK_MAC_ADDRESS_PREF,
+                macInput.text.toString()
+            ).apply()
+            sharedPreferences.edit().putInt(Constants.RESPECK_VERSION, 6).apply()
             val simpleIntent = Intent(this, BluetoothService::class.java)
             this.startService(simpleIntent)
             Log.i("service", "BLE Service Clicked")
