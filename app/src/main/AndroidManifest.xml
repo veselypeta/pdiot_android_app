@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.pdiot_cw3">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -45,6 +46,12 @@
                 <action android:name="com.specknet.respeckmodeltesting.RESPECK_BROADCAST" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".bluetooth.ThingyConnectionService"
+            android:enabled="true"
+            android:exported="true"
+            tools:ignore="Instantiatable" />
     </application>
 
 </manifest>
