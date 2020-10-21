@@ -13,7 +13,6 @@ import android.widget.Button
 import android.widget.EditText
 import com.example.pdiot_cw3.R
 import com.example.pdiot_cw3.utils.Constants
-import com.polidea.rxandroidble2.RxBleClient
 import com.polidea.rxandroidble2.exceptions.BleException
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
