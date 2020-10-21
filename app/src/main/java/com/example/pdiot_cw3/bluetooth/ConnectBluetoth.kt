@@ -26,9 +26,6 @@ class ConnectBluetoth : AppCompatActivity() {
     private lateinit var macInput: EditText;
 
 
-    lateinit var rxBleClient: RxBleClient
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_connect_bluetoth)
@@ -36,10 +33,10 @@ class ConnectBluetoth : AppCompatActivity() {
         // fetch shared preferences
         sharedPreferences = getSharedPreferences(Constants.PREFERENCES_FILE, Context.MODE_PRIVATE)
 
-        // get respek mac
-        macInput = findViewById(R.id.respeck_code)
+        // Get widgets from the view
         connectButton = findViewById(R.id.connect_button)
         disconnectButton = findViewById(R.id.disconnect_button)
+        macInput = findViewById(R.id.respeck_code)
 
 
         // necessary workaround for weird errors
@@ -53,10 +50,10 @@ class ConnectBluetoth : AppCompatActivity() {
         }
 
         // disable connect button unless mac is correct length - make all caps too
+        macInput.filters = arrayOf<InputFilter>(InputFilter.AllCaps())
         macInput.addTextChangedListener(object : TextWatcher{
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun afterTextChanged(s: Editable?) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s.toString().trim().length != 17) {
@@ -67,16 +64,11 @@ class ConnectBluetoth : AppCompatActivity() {
                     connectButton.isClickable = true
                 }
             }
-
-            override fun afterTextChanged(s: Editable?) {
-
-            }
         })
-        macInput.filters = arrayOf<InputFilter>(InputFilter.AllCaps())
 
 
         connectButton.setOnClickListener{
-
+            // push respek mac and version to shared preferences
             sharedPreferences.edit().putString(
                 Constants.RESPECK_MAC_ADDRESS_PREF,
                 macInput.text.toString()
@@ -85,14 +77,12 @@ class ConnectBluetoth : AppCompatActivity() {
             val simpleIntent = Intent(this, BluetoothService::class.java)
             this.startService(simpleIntent)
             Log.i("service", "BLE Service Clicked")
-
         }
 
         disconnectButton.setOnClickListener{
             val simpleIntent = Intent(this, BluetoothService::class.java)
             this.stopService(simpleIntent)
             Log.i("service", "BLE Service Disconnected")
-
         }
 
     }

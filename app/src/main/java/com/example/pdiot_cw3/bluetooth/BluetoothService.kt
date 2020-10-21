@@ -1,6 +1,5 @@
 package com.example.pdiot_cw3.bluetooth
 
-import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -8,7 +7,6 @@ import android.os.IBinder
 import android.util.Log
 import com.example.pdiot_cw3.utils.Constants
 import com.polidea.rxandroidble2.RxBleClient
-import com.polidea.rxandroidble2.RxBleConnection
 import com.polidea.rxandroidble2.RxBleDevice
 import com.polidea.rxandroidble2.scan.ScanResult
 import com.polidea.rxandroidble2.scan.ScanSettings
@@ -38,11 +36,11 @@ class BluetoothService: Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i("service", "BLE Service Started")
+        // start bluetooth service in a new thread
         Thread{
-            Log.i("service", "Service thread created Successfully")
             rxBleClient = RxBleClient.create(this);
             val scanSettings: ScanSettings = ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
                 .build()
 
             scanDisposable = rxBleClient.scanBleDevices(scanSettings)
@@ -61,17 +59,18 @@ class BluetoothService: Service() {
 
     private fun onScanSuccess(scanResult: ScanResult?, respekUUID: String) {
         if (scanResult?.bleDevice?.macAddress == respekUUID){
-            Log.i("ble", "Successfully connected to respek");
+            Log.i("ble", "Successfully found respek");
             respekFound=true;
+            // TODO - maybe this is not needed
             respeckDevice = scanResult.bleDevice;
-            connectRespek()
+            connectRespek(scanResult.bleDevice);
         }
     }
 
-    private fun connectRespek(){
+    private fun connectRespek(respekDevice: RxBleDevice){
         val connectionObservable = respeckDevice?.establishConnection(false);
         val interval = 0
-        connectionObservable?.flatMap { it.setupNotification(
+        val result = connectionObservable?.flatMap { it.setupNotification(
             UUID.fromString(
                 Constants.RESPECK_CHARACTERISTIC_UUID,
             )
@@ -80,7 +79,8 @@ class BluetoothService: Service() {
         }
             ?.flatMap { it }
             ?.subscribe({
-                Log.i("ble", it.toString())
+                Log.i("ble", "Got result");
+                Log.i("ble", it.toString());
             })
     }
 
