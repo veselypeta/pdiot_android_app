@@ -48,10 +48,9 @@
         </service>
 
         <service
-            android:name=".bluetooth.ThingyConnectionService"
-            android:enabled="true"
-            android:exported="true"
-            tools:ignore="Instantiatable" />
+            android:name=".bluetooth.ThingyService"
+        />
+
     </application>
 
 </manifest>

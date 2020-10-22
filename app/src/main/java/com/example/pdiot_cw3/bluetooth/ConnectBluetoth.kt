@@ -74,7 +74,6 @@ class ConnectBluetoth : AppCompatActivity() {
             ).apply()
             sharedPreferences.edit().putInt(Constants.RESPECK_VERSION, 6).apply()
             val simpleIntent = Intent(this, BluetoothService::class.java)
-            val testIntent = Intent(this, ThingyConnectionService::class.java)
             this.startService(simpleIntent)
             Log.i("service", "BLE Service Clicked")
         }

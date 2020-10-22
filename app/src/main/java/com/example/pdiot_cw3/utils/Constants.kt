@@ -7,4 +7,8 @@ object Constants
     const val RESPECK_VERSION = "respeck_version"
     const val RESPECK_MAC_ADDRESS_PREF = "respeck_id_pref"
     const val RESPECK_CHARACTERISTIC_UUID = "00001524-1212-efde-1523-785feabcd125"
+
+
+    // Notifications Constants
+    const val ACTION_DISCONNECT = "DISCONNECT_ACTION"
 }
