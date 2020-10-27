@@ -11,4 +11,9 @@ object Constants
 
     // Notifications Constants
     const val ACTION_DISCONNECT = "DISCONNECT_ACTION"
+
+
+    // TFLite constnat
+    const val MODEL_PATH = "gyroscope_model.tflite"
+    const val LABEL_PATH = "labels.txt"
 }

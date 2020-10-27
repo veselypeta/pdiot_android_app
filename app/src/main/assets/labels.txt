@@ -1,0 +1,11 @@
+Climbing
+Descending
+Walking
+Running
+Standing
+Sitting
+Sitting Forward
+Sitting Back
+Lying Down on Stomach
+Lying Down on Side
+Desk Work

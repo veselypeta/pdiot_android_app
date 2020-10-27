@@ -13,13 +13,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.pdiot_cw3.bluetooth.ConnectBluetoth
 import com.example.pdiot_cw3.bluetooth.ThingyService
+import com.example.pdiot_cw3.common.AccelerometerData
+import com.example.pdiot_cw3.common.TFLiteModel
 import com.example.pdiot_cw3.utils.Constants
 import no.nordicsemi.android.thingylib.Thingy
 import no.nordicsemi.android.thingylib.ThingyListener
 import no.nordicsemi.android.thingylib.ThingyListenerHelper
 import no.nordicsemi.android.thingylib.ThingySdkManager
 import no.nordicsemi.android.thingylib.ThingySdkManager.ServiceConnectionListener
-import com.example.pdiot_cw3.common.Utils.getBluetoothDevice;
+import com.example.pdiot_cw3.common.Utils.getBluetoothDevice
+
 
 class MainActivity : AppCompatActivity(), ServiceConnectionListener {
 
@@ -30,14 +33,19 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
     lateinit var permissionAlertDialog: AlertDialog.Builder
 
     val permissionsForRequest = arrayListOf<String>()
+    val accelerometerData: AccelerometerData = AccelerometerData();
 
     var cameraPermissionGranted = false
     var locationPermissionGranted = false
     var readStoragePermissionGranted = false
     var writeStoragePermissionGranted = false
 
-    lateinit var thingySdkManager: ThingySdkManager;
-    lateinit var thingyBinder: ThingyService.ThingyBinder;
+
+
+    lateinit var classifier: TFLiteModel
+
+    lateinit var thingySdkManager: ThingySdkManager
+    lateinit var thingyBinder: ThingyService.ThingyBinder
     var mDevice: BluetoothDevice? = null
     private val mThingyListener = object : ThingyListener {
         override fun onDeviceConnected(device: BluetoothDevice?, connectionState: Int) {
@@ -53,38 +61,28 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
             thingySdkManager.enableMotionNotifications(device, true);
         }
 
-        override fun onBatteryLevelChanged(bluetoothDevice: BluetoothDevice?, batteryLevel: Int) {
-            //TODO("Not yet implemented")
-        }
+        override fun onBatteryLevelChanged(bluetoothDevice: BluetoothDevice?, batteryLevel: Int) {}
 
         override fun onTemperatureValueChangedEvent(
             bluetoothDevice: BluetoothDevice?,
             temperature: String?
-        ) {
-            //TODO("Not yet implemented")
-        }
+        ) {}
 
         override fun onPressureValueChangedEvent(
             bluetoothDevice: BluetoothDevice?,
             pressure: String?
-        ) {
-            //TODO("Not yet implemented")
-        }
+        ) {}
 
         override fun onHumidityValueChangedEvent(
             bluetoothDevice: BluetoothDevice?,
             humidity: String?
-        ) {
-            //TODO("Not yet implemented")
-        }
+        ) {}
 
         override fun onAirQualityValueChangedEvent(
             bluetoothDevice: BluetoothDevice?,
             eco2: Int,
             tvoc: Int
-        ) {
-            //TODO("Not yet implemented")
-        }
+        ) {}
 
         override fun onColorIntensityValueChangedEvent(
             bluetoothDevice: BluetoothDevice?,
@@ -92,31 +90,23 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
             green: Float,
             blue: Float,
             alpha: Float
-        ) {
-            //TODO("Not yet implemented")
-        }
+        ) {}
 
         override fun onButtonStateChangedEvent(
             bluetoothDevice: BluetoothDevice?,
             buttonState: Int
-        ) {
-            //TODO("Not yet implemented")
-        }
+        ) {}
 
         override fun onTapValueChangedEvent(
             bluetoothDevice: BluetoothDevice?,
             direction: Int,
             count: Int
-        ) {
-            //TODO("Not yet implemented")
-        }
+        ) {}
 
         override fun onOrientationValueChangedEvent(
             bluetoothDevice: BluetoothDevice?,
             orientation: Int
-        ) {
-            //TODO("Not yet implemented")
-        }
+        ) {}
 
         override fun onQuaternionValueChangedEvent(
             bluetoothDevice: BluetoothDevice?,
@@ -124,17 +114,13 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
             x: Float,
             y: Float,
             z: Float
-        ) {
-            //TODO("Not yet implemented")
-        }
+        ) {}
 
         override fun onPedometerValueChangedEvent(
             bluetoothDevice: BluetoothDevice?,
             steps: Int,
             duration: Long
-        ) {
-           //
-        }
+        ) {}
 
         override fun onAccelerometerValueChangedEvent(
             bluetoothDevice: BluetoothDevice?,
@@ -142,7 +128,8 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
             y: Float,
             z: Float
         ) {
-            Log.i("thingy", "Accel: $x, $y, $z")
+            accelerometerData.pushNewData(x, y, z)
+            classifier.classify(accelerometerData)
         }
 
         override fun onGyroscopeValueChangedEvent(
@@ -150,62 +137,45 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
             x: Float,
             y: Float,
             z: Float
-        ) {
-            Log.i("thingy", "Gyro: $x, $y, $z")
-        }
+        ) {}
 
         override fun onCompassValueChangedEvent(
             bluetoothDevice: BluetoothDevice?,
             x: Float,
             y: Float,
             z: Float
-        ) {
-            Log.i("thingy", "Compass: $x, $y, $z")
-        }
+        ) {}
 
         override fun onEulerAngleChangedEvent(
             bluetoothDevice: BluetoothDevice?,
             roll: Float,
             pitch: Float,
             yaw: Float
-        ) {
-            //TODO("Not yet implemented")
-        }
+        ) {}
 
         override fun onRotationMatrixValueChangedEvent(
             bluetoothDevice: BluetoothDevice?,
             matrix: ByteArray?
-        ) {
-            //TODO("Not yet implemented")
-        }
+        ) {}
 
-        override fun onHeadingValueChangedEvent(bluetoothDevice: BluetoothDevice?, heading: Float) {
-            //TODO("Not yet implemented")
-        }
+        override fun onHeadingValueChangedEvent(bluetoothDevice: BluetoothDevice?, heading: Float) {}
 
         override fun onGravityVectorChangedEvent(
             bluetoothDevice: BluetoothDevice?,
             x: Float,
             y: Float,
             z: Float
-        ) {
-            //TODO("Not yet implemented")
-        }
+        ) {}
 
         override fun onSpeakerStatusValueChangedEvent(
             bluetoothDevice: BluetoothDevice?,
             status: Int
-        ) {
-            //TODO("Not yet implemented")
-        }
+        ) {}
 
         override fun onMicrophoneValueChangedEvent(
             bluetoothDevice: BluetoothDevice?,
             data: ByteArray?
-        ) {
-            //TODO("Not yet implemented")
-        }
-
+        ) {}
     }
 
     // thingy UUID - MAC address
@@ -215,6 +185,7 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        classifier = TFLiteModel().create(assets, Constants.MODEL_PATH, Constants.LABEL_PATH)
 
         thingySdkManager = ThingySdkManager.getInstance();
 
@@ -234,7 +205,7 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
 
     override fun onStop() {
         super.onStop();
-        thingySdkManager.unbindService(this);
+        thingySdkManager.unbindService(this)
         ThingyListenerHelper.unregisterThingyListener(this, mThingyListener)
     }
 
@@ -308,12 +279,11 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
         connect()
     }
 
-    // TODO - need a bluetooth device
     private fun connect(){
-        val device = getBluetoothDevice(this, thingyUUID);
+        val device = getBluetoothDevice(this, thingyUUID)
         mDevice = device
         thingySdkManager.connectToThingy(this, device, ThingyService::class.java)
-        val thingy = Thingy(device)
+//        val thingy = Thingy(device)
         thingySdkManager.selectedDevice = device
     }
 
@@ -324,9 +294,7 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
         return false;
     }
     private fun isBleEnabled(): Boolean{
-        val bm = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager;
-        return bm.adapter != null && bm.adapter.isEnabled;
+        val bm = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
+        return bm.adapter != null && bm.adapter.isEnabled
     }
-
-
 }

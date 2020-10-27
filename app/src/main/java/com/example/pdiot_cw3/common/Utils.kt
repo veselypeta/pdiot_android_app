@@ -11,10 +11,10 @@ object Utils {
         val bm = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager;
         val ba = bm.adapter;
 
-        if(ba != null){
+        if (ba != null) {
             try {
                 return ba.getRemoteDevice(address)
-            } catch (e : Exception){
+            } catch (e : Exception) {
                 return null
             }
         }
