@@ -1,33 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/constraintLayout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/hello_world_text"
+        android:id="@+id/app_title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="PDIoT HAR App"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.189"
+        android:textSize="32dp"
+        android:textColor="@color/colorPrimary"
+        android:textFontWeight="@android:integer/config_mediumAnimTime"
+        />
 
     <Button
         android:id="@+id/ble_button"
-        android:layout_width="550px"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100px"
-        android:background="#03A9F4"
-        android:text="Connect to Bluetooth Device"
+        android:layout_marginTop="96dp"
+        android:background="#3F51B5"
+        android:text="Connect to Respek Sensor"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hello_world_text"
-    />
+        app:layout_constraintTop_toBottomOf="@+id/app_title_text" />
+
+    <Button
+        android:id="@+id/connect_thingy_button"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="96dp"
+        android:background="#3F51B5"
+        android:text="Connect to Thingy:52"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ble_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

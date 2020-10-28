@@ -178,8 +178,9 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
         ) {}
     }
 
-    // thingy UUID - MAC address
+    // thingy/respek UUID - MAC address
     private val thingyUUID = "E1:FE:48:AB:C5:2A"
+    private val respekUUID = "RD:05:14:5E:6B:60"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

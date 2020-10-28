@@ -25,7 +25,7 @@ class AccelerometerData {
         counter += 1
         if((counter % 50) == 0){
             for(i in 0 until length){
-                //Log.i("Accelerometer-Data", "i = $i x [${data[i][0]}] - y[${data[i][1]}] - z[${data[i][2]}]")
+                Log.i("Accelerometer-Data", "i = $i x [${data[i][0]}] - y[${data[i][1]}] - z[${data[i][2]}]")
             }
         }
     }

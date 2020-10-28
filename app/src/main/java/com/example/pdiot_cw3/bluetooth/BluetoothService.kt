@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import com.example.pdiot_cw3.common.Utils
 import com.example.pdiot_cw3.utils.Constants
 import com.polidea.rxandroidble2.RxBleClient
 import com.polidea.rxandroidble2.RxBleDevice
@@ -79,8 +80,9 @@ class BluetoothService: Service() {
         }
             ?.flatMap { it }
             ?.subscribe({
+                Utils.processRESpeckPacket(it, 6, this)
                 Log.i("ble", "Got result");
-                Log.i("ble", it.toString());
+                Log.i("ble", it.toString())
             })
     }
 
