@@ -1,14 +1,14 @@
 package com.example.pdiot_cw3.common
 
-import android.util.Log
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-class AccelerometerData {
+class AccelerometerData(private val length: Int, private val width: Int =3) {
 
-    val length = 50
-    val width = 3
+    // create the array and buffer to hold the data - buffer is used when needing to pass to TFLiteModel
     private val data: Array<Array<Float>> = Array (length){ Array (width){0.0f}}
+    private var dataByteBuffer: ByteBuffer = ByteBuffer.allocateDirect(4 * length * width)
+        .apply { order(ByteOrder.nativeOrder()) }
 
     var counter = 0
 
@@ -23,22 +23,16 @@ class AccelerometerData {
         data[0][2] = z
 
         counter += 1
-        if((counter % 50) == 0){
-            for(i in 0 until length){
-                Log.i("Accelerometer-Data", "i = $i x [${data[i][0]}] - y[${data[i][1]}] - z[${data[i][2]}]")
-            }
-        }
     }
 
     fun convertToByteBuffer(): ByteBuffer {
-        val buffer =  ByteBuffer.allocateDirect(4 * length * width)
-            .apply { order(ByteOrder.nativeOrder()) }
+        dataByteBuffer.position(0)
 
         for (n in 0 until length){
-            buffer.putFloat(data[n][0])
-            buffer.putFloat(data[n][1])
-            buffer.putFloat(data[n][2])
+            dataByteBuffer.putFloat(data[n][0])
+            dataByteBuffer.putFloat(data[n][1])
+            dataByteBuffer.putFloat(data[n][2])
         }
-        return buffer
+        return dataByteBuffer
     }
 }

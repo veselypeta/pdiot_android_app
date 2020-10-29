@@ -20,9 +20,8 @@ class ActivityRecognitionActivity : AppCompatActivity() {
     lateinit var accelDataReceiver: BroadcastReceiver
 
    // data store
-    var accelData = AccelerometerData()
+    var accelData = AccelerometerData(50)
 
-    var prediction = ""
     var respekDataFilter = IntentFilter()
 
     // tensorflow model
@@ -34,7 +33,7 @@ class ActivityRecognitionActivity : AppCompatActivity() {
 
         predictionText = findViewById(R.id.prediction_text)
 
-        tfLiteModel = TFLiteModel().create(assets, Constants.MODEL_PATH, Constants.LABEL_PATH)
+        tfLiteModel = TFLiteModel(assets, Constants.MODEL_PATH, Constants.LABEL_PATH)
 
         accelDataReceiver = object: BroadcastReceiver(){
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -44,8 +43,7 @@ class ActivityRecognitionActivity : AppCompatActivity() {
                     val z = intent.getFloatExtra(Constants.EXTRA_RESPECK_LIVE_Z, 0f)
 
                     accelData.pushNewData(x, y, z)
-                    prediction = tfLiteModel.classify(accelData)
-                    predictionText.text = prediction
+                    predictionText.text = tfLiteModel.classify(accelData)
                 }
             }
         }

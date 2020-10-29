@@ -8,16 +8,14 @@ import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 import kotlin.collections.ArrayList
 
-class TFLiteModel {
+class TFLiteModel(assetManager: AssetManager, modelPath: String, labelPath: String) {
 
-    private lateinit var interpreter: Interpreter
-    private lateinit var labelList: List<String>
+    private var interpreter: Interpreter
+    private var labelList: List<String>
 
-    fun create(assetManager: AssetManager, modelPath: String, labelPath: String): TFLiteModel{
-        val classifier = TFLiteModel()
-        classifier.interpreter = Interpreter(classifier.loadModelFile(assetManager, modelPath), Interpreter.Options())
-        classifier.labelList = classifier.loadLabelList(assetManager, labelPath)
-        return classifier
+    init {
+        interpreter = Interpreter(this.loadModelFile(assetManager, modelPath), Interpreter.Options())
+        labelList = this.loadLabelList(assetManager, labelPath)
     }
 
     @Throws (IOException::class)
