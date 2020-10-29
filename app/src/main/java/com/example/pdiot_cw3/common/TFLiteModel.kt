@@ -44,16 +44,19 @@ class TFLiteModel(assetManager: AssetManager, modelPath: String, labelPath: Stri
         return labelList
     }
 
-    fun classify(accelerometerData: AccelerometerData): String{
+    fun classify(accelerometerData: AccelerometerData): Array<FloatArray>{
 
         val output = arrayOf(FloatArray(11))
         interpreter.run(accelerometerData.convertToByteBuffer(), output)
+        return output
+    }
 
+    fun getLabelText(predictions: Array<FloatArray>): String{
         var max = 0f
         var maxIdx = 0
         for (i in labelList.indices){
-            if(output[0][i] > max) {
-                max = output[0][i]
+            if(predictions[0][i] > max) {
+                max = predictions[0][i]
                 maxIdx = i
             }
         }
