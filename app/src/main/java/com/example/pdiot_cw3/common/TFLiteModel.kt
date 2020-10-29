@@ -46,7 +46,7 @@ class TFLiteModel {
         return labelList
     }
 
-    fun classify(accelerometerData: AccelerometerData){
+    fun classify(accelerometerData: AccelerometerData): String{
 
         val output = arrayOf(FloatArray(11))
         interpreter.run(accelerometerData.convertToByteBuffer(), output)
@@ -60,6 +60,6 @@ class TFLiteModel {
             }
         }
         val label = labelList.get(maxIdx)
-        Log.i("TFLite", "PREDICTION: $label")
+        return label
     }
 }

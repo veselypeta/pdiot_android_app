@@ -8,6 +8,7 @@ import android.util.Log
 import com.example.pdiot_cw3.common.Utils
 import com.example.pdiot_cw3.utils.Constants
 import com.polidea.rxandroidble2.RxBleClient
+import com.polidea.rxandroidble2.RxBleConnection
 import com.polidea.rxandroidble2.RxBleDevice
 import com.polidea.rxandroidble2.scan.ScanResult
 import com.polidea.rxandroidble2.scan.ScanSettings
@@ -60,30 +61,52 @@ class BluetoothService: Service() {
 
     private fun onScanSuccess(scanResult: ScanResult?, respekUUID: String) {
         if (scanResult?.bleDevice?.macAddress == respekUUID){
-            Log.i("ble", "Successfully found respek");
-            respekFound=true;
-            // TODO - maybe this is not needed
-            respeckDevice = scanResult.bleDevice;
-            connectRespek(scanResult.bleDevice);
+            Log.i("ble", "Successfully found respek")
+            respekFound=true
+            respeckDevice = scanResult.bleDevice
+            connectRespek()
         }
     }
 
-    private fun connectRespek(respekDevice: RxBleDevice){
-        val connectionObservable = respeckDevice?.establishConnection(false);
-        val interval = 0
-        val result = connectionObservable?.flatMap { it.setupNotification(
-            UUID.fromString(
-                Constants.RESPECK_CHARACTERISTIC_UUID,
-            )
-        ) }?.doOnNext{
-            Log.i("ble", "Subscribed to Respek")
+    private fun connectRespek(){
+        // observe connecting state changes
+        val connectionStateChanges = respeckDevice?.observeConnectionStateChanges()
+            ?.subscribe({
+                when(it){
+                    RxBleConnection.RxBleConnectionState.CONNECTED -> Log.i("Respek", "Connection state = connected")
+                    RxBleConnection.RxBleConnectionState.CONNECTING -> Log.i("Respek", "Connection state = connecting")
+                    RxBleConnection.RxBleConnectionState.DISCONNECTED -> Log.i("Respek", "Connection state = disconnected")
+                    RxBleConnection.RxBleConnectionState.DISCONNECTING -> Log.i("Respek", "Connection state = disconnecting")
+                    else -> Log.i("Respek", "Connection state was null")
+                }
+            }, {
+                Log.i("Respek", "Connection state error =${it.stackTrace}")
+            })
+
+
+        val connectionObservable = respeckDevice?.establishConnection(false)
+        var interval = 0
+
+        val respekLiveSubscription = connectionObservable?.flatMap { it.setupNotification(
+            UUID.fromString(Constants.RESPECK_CHARACTERISTIC_UUID))
+        }?.doOnNext {
+            Log.i("Respek", "Subscriped to Respek")
+            // Send broadcast to everyone notifying of connected respek
+            val respekFoundIntent = Intent(Constants.ACTION_RESPECK_CONNECTED)
+            sendBroadcast(respekFoundIntent)
         }
             ?.flatMap { it }
             ?.subscribe({
                 Utils.processRESpeckPacket(it, 6, this)
-                Log.i("ble", "Got result");
-                Log.i("ble", it.toString())
+                val respekFoundIntent = Intent(Constants.ACTION_RESPECK_CONNECTED)
+                sendBroadcast(respekFoundIntent)
+                interval++
+            }, {
+                Log.i("Respek", "Error when connecting ${it.stackTrace}")
+                val respekFoundIntent = Intent(Constants.ACTION_RESPECK_DISCONNECTED)
+                sendBroadcast(respekFoundIntent)
             })
+
     }
 
     private fun onScanFailure(throwable: Throwable?) {

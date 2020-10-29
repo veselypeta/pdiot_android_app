@@ -1,10 +1,13 @@
 package com.example.pdiot_cw3.common
 
+import android.app.ActivityManager
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import com.example.pdiot_cw3.bluetooth.BluetoothService
+import com.example.pdiot_cw3.utils.Constants
 import java.lang.Exception
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -31,7 +34,7 @@ object Utils {
 
             val uncorrectedRESpeckTimestamp = buffer.int.toLong() and 0xffffffffL
             val newRESpeckTimestamp = uncorrectedRESpeckTimestamp * 197 * 1000 / 32768
-            Log.i("RESpeckPacketHandler", "Respeck timestamp (ms): $newRESpeckTimestamp");
+            Log.i("RESpeckPacketHandler", "Respeck timestamp (ms): $newRESpeckTimestamp")
 
             // get the packet sequence number.
             // This counts from zero when the respeck is reset and is a uint32 value,
@@ -65,18 +68,17 @@ object Utils {
         }
 
         for (i in 8 until values.size step 6) {
-            val x = combineAccelerationBytes(values[i + 0], values[i + 1]);
-            val y = combineAccelerationBytes(values[i + 2], values[i + 3]);
-            val z = combineAccelerationBytes(values[i + 4], values[i + 5]);
-
-            Log.i("Debug", "(x = " + x + ", y = " + y + ", z = " + z + ")");
-
-//            Intent liveDataIntent = new Intent(Constants.ACTION_INNER_RESPECK_BROADCAST);
-//            liveDataIntent.putExtra(Constants.EXTRA_RESPECK_LIVE_X, x);
-//            liveDataIntent.putExtra(Constants.EXTRA_RESPECK_LIVE_Y, y);
-//            liveDataIntent.putExtra(Constants.EXTRA_RESPECK_LIVE_Z, z);
+            val x = combineAccelerationBytes(values[i + 0], values[i + 1])
+            val y = combineAccelerationBytes(values[i + 2], values[i + 3])
+            val z = combineAccelerationBytes(values[i + 4], values[i + 5])
 //
-//            bltService.sendBroadcast(liveDataIntent);
+            Log.i("Debug", "(x = $x, y = $y, z = $z)")
+
+            val liveDataIntent = Intent(Constants.ACTION_INNER_RESPECK_BROADCAST);
+            liveDataIntent.putExtra(Constants.EXTRA_RESPECK_LIVE_X, x)
+            liveDataIntent.putExtra(Constants.EXTRA_RESPECK_LIVE_Y, y)
+            liveDataIntent.putExtra(Constants.EXTRA_RESPECK_LIVE_Z, z)
+            bltService.sendBroadcast(liveDataIntent)
         }
     }
 
@@ -98,5 +100,16 @@ object Utils {
             }
         }
         return null;
+    }
+
+    fun isServiceRunning(serviceClass: Class<Any>, context: Context): Boolean{
+        val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+
+        for(service in manager.getRunningServices(Integer.MAX_VALUE)){
+            if(serviceClass.name == service.service.className){
+                return true
+            }
+        }
+        return false
     }
 }

@@ -8,6 +8,27 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/respek_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Respeck status: Disconnected"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20px"
+        android:layout_marginRight="20px"/>
+
+    <TextView
+        android:id="@+id/thingy_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20px"
+        android:text="Thingy status: Disconnected"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="20px"
+        />
+
+    <TextView
         android:id="@+id/app_title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,7 +44,7 @@
         />
 
     <Button
-        android:id="@+id/ble_button"
+        android:id="@+id/connect_respek_button"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="96dp"
@@ -46,6 +67,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ble_button" />
+        app:layout_constraintTop_toBottomOf="@+id/connect_respek_button" />
+    <Button
+        android:id="@+id/activity_recognition_button"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="96dp"
+        android:background="#3F51B5"
+        android:text="View Activity Recognition"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/connect_thingy_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
