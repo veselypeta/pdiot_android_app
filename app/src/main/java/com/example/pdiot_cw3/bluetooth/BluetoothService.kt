@@ -17,23 +17,26 @@ import java.util.*
 
 class BluetoothService: Service() {
 
-    lateinit var rxBleClient: RxBleClient;
-    lateinit var respekUUID:String;
-    var respekFound = false;
+    lateinit var rxBleClient: RxBleClient
+    lateinit var respekUUID:String
+    var respekFound = false
     var respeckDevice: RxBleDevice? = null
 
     lateinit var scanDisposable: Disposable
+    var respeckLiveSubscription: Disposable? = null
 
     override fun onCreate() {
         super.onCreate()
         val sharedPreferences = getSharedPreferences(Constants.PREFERENCES_FILE, Context.MODE_PRIVATE);
-        respekUUID = sharedPreferences.getString(Constants.RESPECK_MAC_ADDRESS_PREF,"").toString();
+        respekUUID = sharedPreferences.getString(Constants.RESPECK_MAC_ADDRESS_PREF,"").toString()
     }
 
     override fun onDestroy() {
         Log.i("service", "BLE Service Destroyed")
         super.onDestroy()
-        // TODO - clean up service
+        val respeckDisconnectedIntent = Intent(Constants.ACTION_RESPECK_DISCONNECTED)
+        sendBroadcast(respeckDisconnectedIntent)
+        respeckLiveSubscription?.dispose()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -87,7 +90,7 @@ class BluetoothService: Service() {
         val connectionObservable = respeckDevice?.establishConnection(false)
         var interval = 0
 
-        val respekLiveSubscription = connectionObservable?.flatMap { it.setupNotification(
+        respeckLiveSubscription = connectionObservable?.flatMap { it.setupNotification(
             UUID.fromString(Constants.RESPECK_CHARACTERISTIC_UUID))
         }?.doOnNext {
             Log.i("Respek", "Subscriped to Respek")

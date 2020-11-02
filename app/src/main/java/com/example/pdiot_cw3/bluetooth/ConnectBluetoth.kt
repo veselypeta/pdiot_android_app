@@ -9,10 +9,13 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import com.example.pdiot_cw3.MainActivity
 import com.example.pdiot_cw3.R
 import com.example.pdiot_cw3.utils.Constants
+import com.google.android.material.snackbar.Snackbar
 import com.polidea.rxandroidble2.exceptions.BleException
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
@@ -36,6 +39,7 @@ class ConnectBluetoth : AppCompatActivity() {
         connectButton = findViewById(R.id.connect_button)
         disconnectButton = findViewById(R.id.disconnect_button)
         macInput = findViewById(R.id.respeck_code)
+        macInput.setText(sharedPreferences.getString(Constants.RESPECK_MAC_ADDRESS_PREF,""))
 
 
         // necessary workaround for weird errors
@@ -76,12 +80,15 @@ class ConnectBluetoth : AppCompatActivity() {
             val simpleIntent = Intent(this, BluetoothService::class.java)
             this.startService(simpleIntent)
             Log.i("service", "BLE Service Clicked")
+            finish()
+
         }
 
         disconnectButton.setOnClickListener{
             val simpleIntent = Intent(this, BluetoothService::class.java)
             this.stopService(simpleIntent)
             Log.i("service", "BLE Service Disconnected")
+            finish()
         }
 
     }

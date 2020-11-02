@@ -72,7 +72,7 @@ object Utils {
             val y = combineAccelerationBytes(values[i + 2], values[i + 3])
             val z = combineAccelerationBytes(values[i + 4], values[i + 5])
 //
-            Log.i("Debug", "(x = $x, y = $y, z = $z)")
+//            Log.i("Debug", "(x = $x, y = $y, z = $z)")
 
             val liveDataIntent = Intent(Constants.ACTION_INNER_RESPECK_BROADCAST);
             liveDataIntent.putExtra(Constants.EXTRA_RESPECK_LIVE_X, x)

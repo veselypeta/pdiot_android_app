@@ -334,7 +334,7 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
             // do something
             respekStatusText.text = "Respeck status: Connecting..."
             if(!isServiceRunning){
-                Log.i("service", "Starting BLE service")
+                Log.i("Main Activity", "Starting BLE service")
                 val simpleIntent = Intent(this, BluetoothService::class.java)
                 this.startService(simpleIntent)
             }

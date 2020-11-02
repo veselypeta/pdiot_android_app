@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
-import android.util.Log
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.pdiot_cw3.common.AccelerometerData
