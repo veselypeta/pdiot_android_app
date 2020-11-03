@@ -2,7 +2,6 @@ package com.example.pdiot_cw3
 
 import android.Manifest
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -18,18 +17,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.pdiot_cw3.bluetooth.BluetoothService
 import com.example.pdiot_cw3.bluetooth.ConnectBluetoth
-import com.example.pdiot_cw3.bluetooth.ThingyService
 import com.example.pdiot_cw3.utils.Constants
 import no.nordicsemi.android.thingylib.ThingyListener
 import no.nordicsemi.android.thingylib.ThingyListenerHelper
 import no.nordicsemi.android.thingylib.ThingySdkManager
-import no.nordicsemi.android.thingylib.ThingySdkManager.ServiceConnectionListener
-import com.example.pdiot_cw3.common.Utils.getBluetoothDevice
 import com.example.pdiot_cw3.common.Utils.isServiceRunning
 import com.google.android.material.snackbar.Snackbar
 
 
-class MainActivity : AppCompatActivity(), ServiceConnectionListener {
+class MainActivity : AppCompatActivity() {
 
     // buttons
     lateinit var connectRespekButton: Button
@@ -43,7 +39,6 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
     // status broadcast receivers
     lateinit var respekStatusReceiver: BroadcastReceiver
     val respekStatusFilter = IntentFilter()
-    lateinit var thingyStatusReceiver: BroadcastReceiver
 
 
     // permissions
@@ -59,20 +54,20 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
 
     // Thingylib stuff
     lateinit var thingySdkManager: ThingySdkManager
-    lateinit var thingyBinder: ThingyService.ThingyBinder
-    var mDevice: BluetoothDevice? = null
     private val mThingyListener = object : ThingyListener {
         override fun onDeviceConnected(device: BluetoothDevice?, connectionState: Int) {
+            thingyStatusText.text = "Thingy status: Connected"
             Log.i("thingyListener", "------ Device Connected!")
         }
 
         override fun onDeviceDisconnected(device: BluetoothDevice?, connectionState: Int) {
+            thingyStatusText.text = "Thingy status: Disconnected"
             Log.i("thingyListener", "------- Device Disconnected!")
         }
 
         override fun onServiceDiscoveryCompleted(device: BluetoothDevice?) {
             Log.i("thingyListener", "Service Discovery Completed!")
-            thingySdkManager.enableMotionNotifications(device, true);
+            thingySdkManager.enableMotionNotifications(device, true)
         }
 
         override fun onBatteryLevelChanged(bluetoothDevice: BluetoothDevice?, batteryLevel: Int) {}
@@ -190,16 +185,12 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
         ) {}
     }
 
-    // thingy/respek UUID - MAC address
-    private val thingyUUID = "E1:FE:48:AB:C5:2A"
-    private val respekUUID = "RD:05:14:5E:6B:60"
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        thingySdkManager = ThingySdkManager.getInstance();
+        thingySdkManager = ThingySdkManager.getInstance()
 
         // initialise buttons
         connectRespekButton = findViewById(R.id.connect_respek_button)
@@ -221,6 +212,8 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
             }
         }
 
+        // register listener
+        ThingyListenerHelper.registerThingyListener(this, mThingyListener)
 
         respekStatusFilter.addAction(Constants.ACTION_RESPECK_CONNECTED)
         respekStatusFilter.addAction(Constants.ACTION_RESPECK_DISCONNECTED)
@@ -232,16 +225,9 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
         setupRespekStatus()
     }
 
-    override fun onStart() {
-        super.onStart()
-        thingySdkManager.bindService(this, ThingyService::class.java)
-        // register listener
-        ThingyListenerHelper.registerThingyListener(this, mThingyListener);
-    }
 
-    override fun onStop() {
-        super.onStop();
-        thingySdkManager.unbindService(this)
+    override fun onDestroy() {
+        super.onDestroy()
         ThingyListenerHelper.unregisterThingyListener(this, mThingyListener)
     }
 
@@ -253,6 +239,10 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
         }
 
         // TODO - setup connect thingy button
+        connectThingyButton.setOnClickListener{
+            val intent = Intent(this, ThingyConnect::class.java)
+            startActivity(intent)
+        }
 
 
         activityRecognitionButton.setOnClickListener{
@@ -345,29 +335,6 @@ class MainActivity : AppCompatActivity(), ServiceConnectionListener {
         }
     }
 
-    // called after service is bound;
-    override fun onServiceConnected() {
-        thingyBinder = thingySdkManager.thingyBinder as ThingyService.ThingyBinder
-        connect()
-    }
 
-    private fun connect(){
-        val device = getBluetoothDevice(this, thingyUUID)
-        mDevice = device
-        thingySdkManager.connectToThingy(this, device, ThingyService::class.java)
-//        val thingy = Thingy(device)
-        thingySdkManager.selectedDevice = device
-    }
-
-    private fun ensureBleExists(): Boolean{
-        if(packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)){
-            return true;
-        }
-        return false;
-    }
-    private fun isBleEnabled(): Boolean{
-        val bm = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
-        return bm.adapter != null && bm.adapter.isEnabled
-    }
 
 }

@@ -59,7 +59,8 @@ class ConnectBluetoth : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s.toString().trim().length != 17) {
+                val length = s.toString().trim().length
+                if (length != 17) {
                     connectButton.isEnabled = false
                     connectButton.isClickable = false
                 } else {

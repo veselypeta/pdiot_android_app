@@ -23,7 +23,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ActivityRecognitionActivity"
+        <activity android:name=".ThingyConnect"></activity>
+        <activity
+            android:name=".ActivityRecognitionActivity"
             android:parentActivityName=".MainActivity">
             <intent-filter>
                 <action android:name="com.example.pdiot_cw3.RESPECK_BROADCAST" />
@@ -32,7 +34,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
-
         </activity>
         <activity
             android:name=".bluetooth.ConnectBluetoth"
