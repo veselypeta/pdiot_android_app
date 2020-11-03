@@ -1,11 +1,3 @@
-Climbing Stairs
-Descending Stairs
 Walking at Normal Speed
 Running
 Standing
-Sitting
-Sitting bent Forward
-Sitting bent Backward
-Lying Down on Stomach
-Lying Down on Back
-Desk Work

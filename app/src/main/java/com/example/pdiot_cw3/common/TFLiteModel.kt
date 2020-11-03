@@ -46,7 +46,7 @@ class TFLiteModel(assetManager: AssetManager, modelPath: String, labelPath: Stri
 
     fun classify(accelerometerData: AccelerometerData): Array<FloatArray>{
 
-        val output = arrayOf(FloatArray(11))
+        val output = arrayOf(FloatArray(3))
         interpreter.run(accelerometerData.convertToByteBuffer(), output)
         return output
     }
