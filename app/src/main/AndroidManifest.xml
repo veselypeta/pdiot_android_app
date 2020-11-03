@@ -23,7 +23,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ThingyConnect"></activity>
+        <activity android:name=".ThingyRecognition"></activity>
+        <activity android:name=".ThingyConnect" />
         <activity
             android:name=".ActivityRecognitionActivity"
             android:parentActivityName=".MainActivity">

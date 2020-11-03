@@ -24,6 +24,10 @@ import java.util.concurrent.BlockingQueue
 import java.util.concurrent.DelayQueue
 import kotlin.math.sqrt
 
+enum class DataSource {
+    RESPEK, THINGY52
+}
+
 class ActivityRecognitionActivity : AppCompatActivity() {
 
     // display queue to update the graph smoothly
@@ -47,6 +51,9 @@ class ActivityRecognitionActivity : AppCompatActivity() {
     var time = 0f
     lateinit var allAccelData: LineData
     lateinit var chart: LineChart
+
+    // TODO - data source
+    var mDataSource = DataSource.RESPEK
 
 
     // tensorflow model
@@ -109,6 +116,7 @@ class ActivityRecognitionActivity : AppCompatActivity() {
         this.registerReceiver(accelDataReceiver, respekDataFilter, null, handler)
     }
 
+
     private fun setupGraph(){
         chart = findViewById(R.id.chart)
         time = 0f
@@ -163,16 +171,13 @@ class ActivityRecognitionActivity : AppCompatActivity() {
         dataSet_x.addEntry(Entry(time, respeckData.accel_x))
         dataSet_y.addEntry(Entry(time, respeckData.accel_y))
         dataSet_z.addEntry(Entry(time, respeckData.accel_z))
-//        dataSet_mag.addEntry(Entry(time, respeckData.accel_mag))
 
         runOnUiThread {
             allAccelData.notifyDataChanged()
             chart.notifyDataSetChanged()
             chart.invalidate()
             chart.setVisibleXRangeMaximum(150f)
-//            Log.i("Chart", "Lowest X = " + chart.lowestVisibleX.toString())
             chart.moveViewToX(chart.lowestVisibleX + 40)
-//            Log.i("Chart", "Lowest X after = " + chart.lowestVisibleX.toString())
         }
     }
 
