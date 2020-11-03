@@ -30,7 +30,8 @@ class MainActivity : AppCompatActivity() {
     // buttons
     lateinit var connectRespekButton: Button
     lateinit var connectThingyButton: Button
-    lateinit var activityRecognitionButton: Button
+    lateinit var respekActivityRecognitionButton: Button
+    lateinit var thingyActivityRecognitionButton: Button
 
     // status-text
     lateinit var respekStatusText: TextView
@@ -195,7 +196,8 @@ class MainActivity : AppCompatActivity() {
         // initialise buttons
         connectRespekButton = findViewById(R.id.connect_respek_button)
         connectThingyButton = findViewById(R.id.connect_thingy_button)
-        activityRecognitionButton = findViewById(R.id.activity_recognition_button)
+        respekActivityRecognitionButton = findViewById(R.id.activity_recognition_button)
+        thingyActivityRecognitionButton = findViewById(R.id.thingy_activity_recognition)
 
         // get text view ref
         respekStatusText = findViewById(R.id.respek_status)
@@ -244,8 +246,13 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        thingyActivityRecognitionButton.setOnClickListener{
+            val intent = Intent(this, ThingyRecognition::class.java)
+            startActivity(intent)
+        }
 
-        activityRecognitionButton.setOnClickListener{
+
+        respekActivityRecognitionButton.setOnClickListener{
             // TODO - Hack AF
             if(respekStatusText.text == "Respeck status: Connected"){
                 val activityRecognitionActivity = Intent(this, ActivityRecognitionActivity::class.java)

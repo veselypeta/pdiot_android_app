@@ -36,7 +36,7 @@ class ActivityRecognitionActivity : AppCompatActivity() {
     // receive broadcast
     lateinit var accelDataReceiver: BroadcastReceiver
     var respekDataFilter = IntentFilter(Constants.ACTION_INNER_RESPECK_BROADCAST)
-    var accelData = AccelerometerData(50)
+    var accelData = AccelerometerData(50, 3)
     lateinit var looper: Looper
 
     // global graph variables
@@ -47,6 +47,7 @@ class ActivityRecognitionActivity : AppCompatActivity() {
     var time = 0f
     lateinit var allAccelData: LineData
     lateinit var chart: LineChart
+
 
 
     // tensorflow model
@@ -109,6 +110,7 @@ class ActivityRecognitionActivity : AppCompatActivity() {
         this.registerReceiver(accelDataReceiver, respekDataFilter, null, handler)
     }
 
+
     private fun setupGraph(){
         chart = findViewById(R.id.chart)
         time = 0f
@@ -163,16 +165,13 @@ class ActivityRecognitionActivity : AppCompatActivity() {
         dataSet_x.addEntry(Entry(time, respeckData.accel_x))
         dataSet_y.addEntry(Entry(time, respeckData.accel_y))
         dataSet_z.addEntry(Entry(time, respeckData.accel_z))
-//        dataSet_mag.addEntry(Entry(time, respeckData.accel_mag))
 
         runOnUiThread {
             allAccelData.notifyDataChanged()
             chart.notifyDataSetChanged()
             chart.invalidate()
             chart.setVisibleXRangeMaximum(150f)
-//            Log.i("Chart", "Lowest X = " + chart.lowestVisibleX.toString())
             chart.moveViewToX(chart.lowestVisibleX + 40)
-//            Log.i("Chart", "Lowest X after = " + chart.lowestVisibleX.toString())
         }
     }
 
