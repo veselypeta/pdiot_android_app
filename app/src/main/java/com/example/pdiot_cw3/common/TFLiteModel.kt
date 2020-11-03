@@ -1,7 +1,6 @@
 package com.example.pdiot_cw3.common
 
 import android.content.res.AssetManager
-import android.util.Log
 import org.tensorflow.lite.Interpreter
 import java.io.*
 import java.nio.MappedByteBuffer
@@ -45,22 +44,20 @@ class TFLiteModel(assetManager: AssetManager, modelPath: String, labelPath: Stri
     }
 
     fun classify(accelerometerData: AccelerometerData): Array<FloatArray>{
-
         val output = arrayOf(FloatArray(11))
-        interpreter.run(accelerometerData.convertToByteBuffer(), output)
+        interpreter.run(accelerometerData.getData(), output)
         return output
     }
 
     fun getLabelText(predictions: Array<FloatArray>): String{
-        var max = 0f
-        var maxIdx = 0
+        var max = Float.MIN_VALUE
+        var maxIdx = -1
         for (i in labelList.indices){
             if(predictions[0][i] > max) {
                 max = predictions[0][i]
                 maxIdx = i
             }
         }
-        val label = labelList.get(maxIdx)
-        return label
+        return labelList[maxIdx]
     }
 }

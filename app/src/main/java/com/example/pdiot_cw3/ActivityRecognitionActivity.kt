@@ -24,10 +24,6 @@ import java.util.concurrent.BlockingQueue
 import java.util.concurrent.DelayQueue
 import kotlin.math.sqrt
 
-enum class DataSource {
-    RESPEK, THINGY52
-}
-
 class ActivityRecognitionActivity : AppCompatActivity() {
 
     // display queue to update the graph smoothly
@@ -40,7 +36,7 @@ class ActivityRecognitionActivity : AppCompatActivity() {
     // receive broadcast
     lateinit var accelDataReceiver: BroadcastReceiver
     var respekDataFilter = IntentFilter(Constants.ACTION_INNER_RESPECK_BROADCAST)
-    var accelData = AccelerometerData(50)
+    var accelData = AccelerometerData(50, 3)
     lateinit var looper: Looper
 
     // global graph variables
@@ -52,8 +48,6 @@ class ActivityRecognitionActivity : AppCompatActivity() {
     lateinit var allAccelData: LineData
     lateinit var chart: LineChart
 
-    // TODO - data source
-    var mDataSource = DataSource.RESPEK
 
 
     // tensorflow model

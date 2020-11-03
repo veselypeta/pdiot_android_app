@@ -5,6 +5,7 @@ import android.os.Binder
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import com.example.pdiot_cw3.bluetooth.ThingyService
 import com.example.pdiot_cw3.common.AccelerometerData
 import com.example.pdiot_cw3.common.TFLiteModel
@@ -12,8 +13,12 @@ import com.example.pdiot_cw3.utils.Constants
 import no.nordicsemi.android.thingylib.ThingyListener
 import no.nordicsemi.android.thingylib.ThingyListenerHelper
 import no.nordicsemi.android.thingylib.ThingySdkManager
+import kotlin.math.roundToInt
 
 class ThingyRecognition : AppCompatActivity(), ThingySdkManager.ServiceConnectionListener {
+
+    lateinit var predictionText: TextView
+    lateinit var confidenceText: TextView
 
     lateinit var mThingySdkManager: ThingySdkManager
     lateinit var mThingyBinder: Binder
@@ -166,13 +171,19 @@ class ThingyRecognition : AppCompatActivity(), ThingySdkManager.ServiceConnectio
 
     }
 
-    val tfLiteModel = TFLiteModel(assets, Constants.MODEL_PATH, Constants.LABEL_PATH)
+    lateinit var tfLiteModel: TFLiteModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_thingy_recognition)
+
+        predictionText = findViewById(R.id.thingy_prediction_text)
+        confidenceText = findViewById(R.id.thingy_confidence_text)
+
         mThingySdkManager = ThingySdkManager.getInstance()
+
+        tfLiteModel= TFLiteModel(assets, Constants.MODEL_PATH, Constants.LABEL_PATH)
     }
 
     override fun onStart() {
@@ -194,6 +205,8 @@ class ThingyRecognition : AppCompatActivity(), ThingySdkManager.ServiceConnectio
     private fun updatePrediction(){
         val predictions = tfLiteModel.classify(accelerometerData)
         val label = tfLiteModel.getLabelText(predictions)
-        Log.i("Thingy Prediction", "$label")
+        val confidence = predictions[0].maxOrNull()?.times(100)?.roundToInt()
+        predictionText.text = label
+        confidenceText.text = "confidence $confidence %"
     }
 }
