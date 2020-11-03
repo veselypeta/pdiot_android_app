@@ -2,7 +2,6 @@ package com.example.pdiot_cw3
 
 import android.Manifest
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -18,13 +17,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.pdiot_cw3.bluetooth.BluetoothService
 import com.example.pdiot_cw3.bluetooth.ConnectBluetoth
-import com.example.pdiot_cw3.bluetooth.ThingyService
 import com.example.pdiot_cw3.utils.Constants
 import no.nordicsemi.android.thingylib.ThingyListener
 import no.nordicsemi.android.thingylib.ThingyListenerHelper
 import no.nordicsemi.android.thingylib.ThingySdkManager
-import no.nordicsemi.android.thingylib.ThingySdkManager.ServiceConnectionListener
-import com.example.pdiot_cw3.common.Utils.getBluetoothDevice
 import com.example.pdiot_cw3.common.Utils.isServiceRunning
 import com.google.android.material.snackbar.Snackbar
 
@@ -43,7 +39,6 @@ class MainActivity : AppCompatActivity() {
     // status broadcast receivers
     lateinit var respekStatusReceiver: BroadcastReceiver
     val respekStatusFilter = IntentFilter()
-    lateinit var thingyStatusReceiver: BroadcastReceiver
 
 
     // permissions
@@ -219,7 +214,6 @@ class MainActivity : AppCompatActivity() {
 
         // register listener
         ThingyListenerHelper.registerThingyListener(this, mThingyListener)
-
 
         respekStatusFilter.addAction(Constants.ACTION_RESPECK_CONNECTED)
         respekStatusFilter.addAction(Constants.ACTION_RESPECK_DISCONNECTED)
