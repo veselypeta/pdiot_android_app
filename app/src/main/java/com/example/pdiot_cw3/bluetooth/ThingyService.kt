@@ -13,49 +13,47 @@ class ThingyService: BaseThingyService() {
 
     inner class ThingyBinder: BaseThingyBinder() {
         override fun getThingyConnection(device: BluetoothDevice?): ThingyConnection? {
-            return mThingyConnections[device];
+            return mThingyConnections[device]
         }
 
         // Define own api here
-        fun bindCallback() {
-            Log.i("thingy", "Successfully called callback!")
-        }
+
     }
 
     override fun onBind(intent: Intent?): BaseThingyBinder? {
-        Log.i("thingy", "Thingy Service Bound!")
+        Log.i("ThingyService", "Thingy Service Bound!")
        return ThingyBinder();
     }
 
     // onUnbind
     override fun onDeviceConnected(device: BluetoothDevice?, connectionState: Int) {
         super.onDeviceConnected(device, connectionState)
-        Log.i("thingy", "Device Connected!")
+        Log.i("ThingyService", "Device Connected!")
     }
 
     override fun onDeviceDisconnected(device: BluetoothDevice?, connectionState: Int) {
         super.onDeviceDisconnected(device, connectionState)
-        Log.i("thingy", "Device Disconnected!")
+        Log.i("ThingyService", "Device Disconnected!")
     }
 
 
     override fun onCreate() {
         super.onCreate()
         registerReceiver(mNotificationDisconnectReceiver, IntentFilter(Constants.ACTION_DISCONNECT))
-        Log.i("thingy", "Thingy Service Created!")
+        Log.i("ThingyService", "Thingy Service Created!")
     }
 
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(mNotificationDisconnectReceiver)
-        Log.i("thingy", "Thingy Service Destroyed!")
+        Log.i("ThingyService", "Thingy Service Destroyed!")
     }
 
     private val mNotificationDisconnectReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action){
                 Constants.ACTION_DISCONNECT ->  {
-                    val device: BluetoothDevice? = intent.extras?.getParcelable("EXTRA_DEVICE");
+                    val device: BluetoothDevice? = intent.extras?.getParcelable("EXTRA_DEVICE")
                     if (device != null){
                         mThingyConnections?.get(device)?.disconnect();
                     }

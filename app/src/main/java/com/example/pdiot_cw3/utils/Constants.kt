@@ -18,6 +18,10 @@ object Constants
     const val EXTRA_RESPECK_LIVE_Y = "respeck_y"
     const val EXTRA_RESPECK_LIVE_Z = "respeck_z"
 
+    // Thingy Constants
+    const val THINGY_MAC_ADDRESS_PREF = "thingy_id_pref"
+
+
 
     // Notifications Constants
     const val ACTION_DISCONNECT = "DISCONNECT_ACTION"
