@@ -60,7 +60,7 @@ class ActivityRecognitionActivity : AppCompatActivity() {
         predictionText = findViewById(R.id.prediction_text)
         confidenceText = findViewById(R.id.confidence_text)
 
-        tfLiteModel = TFLiteModel(assets, Constants.MODEL_PATH, Constants.LABEL_PATH)
+        tfLiteModel = TFLiteModel(assets, Constants.MODEL_PATH, Constants.LABEL_PATH, 3)
 
         // get the accel fields
         val accel_x = findViewById<TextView>(R.id.live_x_accel_data)

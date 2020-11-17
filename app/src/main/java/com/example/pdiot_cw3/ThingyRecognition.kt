@@ -183,7 +183,7 @@ class ThingyRecognition : AppCompatActivity(), ThingySdkManager.ServiceConnectio
 
         mThingySdkManager = ThingySdkManager.getInstance()
 
-        tfLiteModel= TFLiteModel(assets, Constants.MODEL_PATH, Constants.LABEL_PATH)
+        tfLiteModel= TFLiteModel(assets, Constants.MODEL_PATH, Constants.LABEL_PATH, 3)
     }
 
     override fun onStart() {
