@@ -26,6 +26,9 @@
         <activity
             android:name=".ThingyRecognition"
             android:parentActivityName=".MainActivity">
+            <intent-filter>
+                <action android:name="com.example.bluetooth.le.ACTION_DATA_AVAILABLE" />
+            </intent-filter>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />

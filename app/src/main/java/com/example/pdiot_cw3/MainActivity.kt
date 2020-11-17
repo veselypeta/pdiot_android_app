@@ -25,7 +25,7 @@ import no.nordicsemi.android.thingylib.ThingySdkManager
 import com.example.pdiot_cw3.common.Utils.isServiceRunning
 import com.google.android.material.snackbar.Snackbar
 
-private val TAG = ThingyBluetoothService::class.java.simpleName
+private val TAG = MainActivity::class.java.simpleName
 
 class MainActivity : AppCompatActivity() {
 
@@ -274,10 +274,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         thingyActivityRecognitionButton.setOnClickListener{
-            val intent = Intent(this, ThingyRecognition::class.java)
-            startActivity(intent)
+            if ( thingyStatusText.text == "Thingy status: Connected"){
+                val intent = Intent(this, ThingyRecognition::class.java)
+                startActivity(intent)
+            } else {
+                val contextView = findViewById<View>(R.id.constraintLayout)
+                Snackbar.make(contextView, "Please first connect to Thingy:52", Snackbar.LENGTH_LONG).show()
+                Log.i("Main Activity", "not connected to thingy")
+            }
         }
-
 
         respekActivityRecognitionButton.setOnClickListener{
             // TODO - Hack AF
@@ -286,7 +291,7 @@ class MainActivity : AppCompatActivity() {
                 startActivity(activityRecognitionActivity)
             } else {
                 val contextView = findViewById<View>(R.id.constraintLayout)
-                Snackbar.make(contextView, "Please first connect to Respek or Thingy:52", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(contextView, "Please first connect to Respek", Snackbar.LENGTH_LONG).show()
                 Log.i("Main Activity", "not connected to respek")
             }
         }

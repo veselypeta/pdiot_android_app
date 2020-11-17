@@ -153,10 +153,10 @@ class ThingyBluetoothService : Service() {
         sendBroadcast(intent)
     }
 
-    private fun processThingyPacket(data: ByteArray): IntArray{
-        val packet = IntArray(3)
+    private fun processThingyPacket(data: ByteArray): FloatArray{
+        val packet = FloatArray(3)
         for(i in 0 until 3){
-            packet[i] = unsignedShortToInt(data[(2*i)], data[(2*i) + 1])
+            packet[i] = unsignedShortToInt(data[(2*i)], data[(2*i) + 1]).toFloat() / 1000
         }
         return packet
     }
