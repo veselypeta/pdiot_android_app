@@ -21,6 +21,18 @@ object Constants
     // Thingy Constants
     const val THINGY_MAC_ADDRESS_PREF = "thingy_id_pref"
 
+    const val ACTION_GATT_CONNECTED = "com.example.bluetooth.le.ACTION_GATT_CONNECTED"
+    const val ACTION_GATT_DISCONNECTED = "com.example.bluetooth.le.ACTION_GATT_DISCONNECTED"
+    const val ACTION_GATT_SERVICES_DISCOVERED = "com.example.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED"
+    const val ACTION_THINGY_DATA_AVAILABLE = "com.example.bluetooth.le.ACTION_DATA_AVAILABLE"
+    const val EXTRA_THINGY_DATA_ZERO = "com.example.bluetooth.le.EXTRA_THINGY_DATA_ZERO"
+    const val EXTRA_THINGY_DATA_ONE = "com.example.bluetooth.le.EXTRA_THINGY_DATA_ONE"
+    const val EXTRA_THINGY_DATA_TWO = "com.example.bluetooth.le.EXTRA_THINGY_DATA_TWO"
+
+
+    const val THINGY_SERVICE_UUID = "0000fe40-cc7a-482a-984a-7f2ed5b3e58f"
+    const val THINGY_CHARACTERISITC_UUID = "0000fe41-8e22-4541-9d4c-21edae82ed19"
+    const val THINGY_DESCRIPTOR_UUID = "00002902-0000-1000-8000-00805F9B34FB"
 
 
     // Notifications Constants

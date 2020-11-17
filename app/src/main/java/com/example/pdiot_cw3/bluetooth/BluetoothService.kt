@@ -27,7 +27,7 @@ class BluetoothService: Service() {
 
     override fun onCreate() {
         super.onCreate()
-        val sharedPreferences = getSharedPreferences(Constants.PREFERENCES_FILE, Context.MODE_PRIVATE);
+        val sharedPreferences = getSharedPreferences(Constants.PREFERENCES_FILE, Context.MODE_PRIVATE)
         respekUUID = sharedPreferences.getString(Constants.RESPECK_MAC_ADDRESS_PREF,"").toString()
     }
 
@@ -53,12 +53,12 @@ class BluetoothService: Service() {
                 .subscribe({
                     if(respekFound){
                         Log.i("ble", "Disposing of scanner")
-                        scanDisposable.dispose();
+                        scanDisposable.dispose()
                     }
-                    onScanSuccess(it, respekUUID);
+                    onScanSuccess(it, respekUUID)
                 }, {onScanFailure(it)})
 
-        }.start();
+        }.start()
         return START_STICKY
     }
 

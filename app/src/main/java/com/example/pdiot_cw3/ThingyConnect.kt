@@ -1,23 +1,28 @@
 package com.example.pdiot_cw3
 
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothManager
+import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanResult
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import com.example.pdiot_cw3.bluetooth.ThingyService
-import com.example.pdiot_cw3.common.Utils
+import com.example.pdiot_cw3.bluetooth.BluetoothService
+import com.example.pdiot_cw3.bluetooth.ThingyBluetoothService
 import com.example.pdiot_cw3.utils.Constants
-import no.nordicsemi.android.thingylib.ThingyListener
-import no.nordicsemi.android.thingylib.ThingySdkManager
 
-class ThingyConnect : AppCompatActivity(), ThingySdkManager.ServiceConnectionListener {
+class ThingyConnect : AppCompatActivity(){
 
     private lateinit var connectButton: Button
     private lateinit var disconnectButton: Button
@@ -25,11 +30,10 @@ class ThingyConnect : AppCompatActivity(), ThingySdkManager.ServiceConnectionLis
 
     lateinit var sharedPreferences: SharedPreferences
 
-    lateinit var mThingyListener: ThingyListener
-    lateinit var mThingySdkManager: ThingySdkManager
-    lateinit var mThingyBinder: ThingyService.ThingyBinder
-    var mDevice: BluetoothDevice? = null
-
+//    lateinit var mThingyListener: ThingyListener
+//    lateinit var mThingySdkManager: ThingySdkManager
+//    lateinit var mThingyBinder: ThingyService.ThingyBinder
+//    var mDevice: BluetoothDevice? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +48,10 @@ class ThingyConnect : AppCompatActivity(), ThingySdkManager.ServiceConnectionLis
 
         thingyMacInput.setText(sharedPreferences.getString(Constants.THINGY_MAC_ADDRESS_PREF,""))
 
+
+
+
+        /*
         mThingySdkManager = ThingySdkManager.getInstance()
 
         mThingyListener = object: ThingyListener {
@@ -197,10 +205,12 @@ class ThingyConnect : AppCompatActivity(), ThingySdkManager.ServiceConnectionLis
 
         }
 
+         */
         setupClickListeners()
         setupEditText()
     }
 
+    /*
     override fun onStart() {
         super.onStart()
         mThingySdkManager.bindService(this, ThingyService::class.java)
@@ -212,19 +222,28 @@ class ThingyConnect : AppCompatActivity(), ThingySdkManager.ServiceConnectionLis
     }
 
 
+     */
+
+
+
     private fun setupClickListeners(){
         connectButton.setOnClickListener{
-            Log.i("ThingyConnect", "Starting Thingy Connection")
+            Log.i("ThingyConnect", "Connect Button Pressed")
 
             saveMacToSharedPref()
-            connectToThingy()
+            val simpleIntent = Intent(this, ThingyBluetoothService::class.java)
+            this.startService(simpleIntent)
+            //connectToThingy()
             finish()
         }
 
         disconnectButton.setOnClickListener{
-            Log.i("ThingyConnect", "Disconnecting Thingy")
+            Log.i("ThingyConnect", "Disconnect Button Pressed")
 
-            mThingySdkManager.disconnectFromAllThingies()
+            //mThingySdkManager.disconnectFromAllThingies()
+            val simpleIntent = Intent(this, ThingyBluetoothService::class.java)
+            this.stopService(simpleIntent)
+            Log.i("ThingyConnect", "ThingyConnect Service Disconnected")
             finish()
         }
     }
@@ -255,6 +274,7 @@ class ThingyConnect : AppCompatActivity(), ThingySdkManager.ServiceConnectionLis
         ).apply()
     }
 
+    /*
     override fun onServiceConnected() {
         mThingyBinder = mThingySdkManager.thingyBinder as ThingyService.ThingyBinder
     }
@@ -266,5 +286,6 @@ class ThingyConnect : AppCompatActivity(), ThingySdkManager.ServiceConnectionLis
         mThingySdkManager.connectToThingy(this, device, ThingyService::class.java)
         mThingySdkManager.selectedDevice = device
     }
+     */
 
 }

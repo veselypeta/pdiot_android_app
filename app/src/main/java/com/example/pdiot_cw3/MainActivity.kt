@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.pdiot_cw3.bluetooth.BluetoothService
 import com.example.pdiot_cw3.bluetooth.ConnectBluetoth
+import com.example.pdiot_cw3.bluetooth.ThingyBluetoothService
 import com.example.pdiot_cw3.utils.Constants
 import no.nordicsemi.android.thingylib.ThingyListener
 import no.nordicsemi.android.thingylib.ThingyListenerHelper
@@ -24,6 +25,7 @@ import no.nordicsemi.android.thingylib.ThingySdkManager
 import com.example.pdiot_cw3.common.Utils.isServiceRunning
 import com.google.android.material.snackbar.Snackbar
 
+private val TAG = ThingyBluetoothService::class.java.simpleName
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,6 +43,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var respekStatusReceiver: BroadcastReceiver
     val respekStatusFilter = IntentFilter()
 
+    // status thingy receivers
+    lateinit var thingyStatusReceiver: BroadcastReceiver
+    val thingyStatusFilter = IntentFilter()
+
 
     // permissions
     lateinit var permissionAlertDialog: AlertDialog.Builder
@@ -53,6 +59,7 @@ class MainActivity : AppCompatActivity() {
     var readStoragePermissionGranted = false
     var writeStoragePermissionGranted = false
 
+    /*
     // Thingylib stuff
     lateinit var thingySdkManager: ThingySdkManager
     private val mThingyListener = object : ThingyListener {
@@ -187,11 +194,14 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+     */
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        thingySdkManager = ThingySdkManager.getInstance()
+        //thingySdkManager = ThingySdkManager.getInstance()
 
         // initialise buttons
         connectRespekButton = findViewById(R.id.connect_respek_button)
@@ -213,25 +223,42 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-        // register listener
-        ThingyListenerHelper.registerThingyListener(this, mThingyListener)
-
         respekStatusFilter.addAction(Constants.ACTION_RESPECK_CONNECTED)
         respekStatusFilter.addAction(Constants.ACTION_RESPECK_DISCONNECTED)
         this.registerReceiver(respekStatusReceiver, respekStatusFilter)
+
+        thingyStatusReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                Log.i(TAG, "Received Thingy Broadcast")
+                when(intent?.action){
+                    Constants.ACTION_GATT_CONNECTED -> thingyStatusText.text = "Thingy status: Connected"
+                    Constants.ACTION_GATT_DISCONNECTED -> thingyStatusText.text = "Thingy status: Disconnected"
+                    else -> thingyStatusText.text = "Thingy status: Error"
+                }
+            }
+        }
+        thingyStatusFilter.addAction(Constants.ACTION_GATT_CONNECTED)
+        thingyStatusFilter.addAction(Constants.ACTION_GATT_DISCONNECTED)
+        this.registerReceiver(thingyStatusReceiver, thingyStatusFilter)
+
+        // register listener
+        //ThingyListenerHelper.registerThingyListener(this, mThingyListener)
+
 
         permissionAlertDialog = AlertDialog.Builder(this)
         setupPermissions()
         setupClickListeners()
         setupRespekStatus()
+        setupThingyStatus()
     }
 
-
+/*
     override fun onDestroy() {
         super.onDestroy()
         ThingyListenerHelper.unregisterThingyListener(this, mThingyListener)
     }
+
+ */
 
     fun setupClickListeners() {
         // onclick start the connect bluetooth activity
@@ -324,7 +351,7 @@ class MainActivity : AppCompatActivity() {
 
     fun setupRespekStatus() {
         val isServiceRunning = isServiceRunning(BluetoothService::class.java as Class<Any>, applicationContext)
-        Log.i("DEBUG: ", "isServiceRunning = $isServiceRunning")
+        Log.i("DEBUG: ", "isServiceRunning-Respek = $isServiceRunning")
 
         val sharedPreferences = getSharedPreferences(Constants.PREFERENCES_FILE, Context.MODE_PRIVATE)
         if (sharedPreferences.contains(Constants.RESPECK_MAC_ADDRESS_PREF)){
@@ -339,6 +366,24 @@ class MainActivity : AppCompatActivity() {
             Log.i("sharedpref", "No Respek seen before, must pair first")
             respekStatusText.text = "Respeck status: Unpaired"
 
+        }
+    }
+
+    fun setupThingyStatus() {
+        val isServiceRunning = isServiceRunning(ThingyBluetoothService::class.java as Class<Any>, applicationContext)
+        Log.i("DEBUG: ", "isServiceRunning-Thingy = $isServiceRunning")
+
+        val sharedPreferences = getSharedPreferences(Constants.PREFERENCES_FILE, Context.MODE_PRIVATE)
+        if (sharedPreferences.contains(Constants.THINGY_MAC_ADDRESS_PREF)){
+            thingyStatusText.text = "Thingy Status: Connecting..."
+            if(!isServiceRunning){
+                Log.i(TAG, "Starting Thingy BLE Service")
+                val simpleIntent = Intent(this, ThingyBluetoothService::class.java)
+                this.startService(simpleIntent)
+            }
+        } else {
+            Log.i("sharepref", "No Thingy seen before, must pair first")
+            respekStatusText.text = "Thingy status: Unpaired"
         }
     }
 

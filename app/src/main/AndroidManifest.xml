@@ -80,6 +80,7 @@
             </intent-filter>
         </service>
         <service android:name=".bluetooth.ThingyService" />
+        <service android:name=".bluetooth.ThingyBluetoothService" />
     </application>
 
 </manifest>
