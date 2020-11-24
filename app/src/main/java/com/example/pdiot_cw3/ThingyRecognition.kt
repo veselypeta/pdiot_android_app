@@ -90,7 +90,6 @@ class ThingyRecognition : AppCompatActivity(){
     private fun updateUI() {
         val maxIdx = getMaxIdx()
         val labelText = labelList[maxIdx]
-//        Log.i(TAG, "Updating UI - with $maxIdx")
         runOnUiThread{
             thingy_prediction_text.text = labelText
             thingy_confidence_text.text = "${(outputTensor[maxIdx] * 100).toInt()} %"
