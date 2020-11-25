@@ -1,0 +1,8 @@
+Climbing stairs
+Descending stairs
+Walking at normal speed
+Running
+Standing
+Lying down on stomach
+Lying down on back
+Sitting

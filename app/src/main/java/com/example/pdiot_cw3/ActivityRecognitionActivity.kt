@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
+import android.util.Log
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.pdiot_cw3.common.AccelerometerData
@@ -20,8 +23,10 @@ import com.github.mikephil.charting.data.LineData
 import kotlin.math.roundToInt
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import java.util.*
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.DelayQueue
+import kotlin.collections.ArrayList
 import kotlin.math.sqrt
 
 class ActivityRecognitionActivity : AppCompatActivity() {
@@ -30,13 +35,13 @@ class ActivityRecognitionActivity : AppCompatActivity() {
     private var mDelayRespeckQueue: BlockingQueue<DelayRespek> = DelayQueue()
 
     // prediction text
-    lateinit var predictionText: TextView
-    lateinit var confidenceText: TextView
+    lateinit var predictionProgressBar: ProgressBar
+    lateinit var predictionImage: ImageView
 
     // receive broadcast
     lateinit var accelDataReceiver: BroadcastReceiver
     var respekDataFilter = IntentFilter(Constants.ACTION_INNER_RESPECK_BROADCAST)
-    var accelData = AccelerometerData(50, 3)
+    var lstmData = AccelerometerData(20, 3)
     lateinit var looper: Looper
 
     // global graph variables
@@ -49,18 +54,18 @@ class ActivityRecognitionActivity : AppCompatActivity() {
     lateinit var chart: LineChart
 
 
-
-    // tensorflow model
-    lateinit var tfLiteModel: TFLiteModel
+    // new tflite model
+    lateinit var lstmModel: TFLiteModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recognition2)
 
-        predictionText = findViewById(R.id.prediction_text)
-        confidenceText = findViewById(R.id.confidence_text)
+        predictionProgressBar = findViewById(R.id.predicted_activity)
+        predictionImage = findViewById(R.id.predicted_activity_logo)
 
-        tfLiteModel = TFLiteModel(assets, Constants.MODEL_PATH, Constants.LABEL_PATH, 3)
+        lstmModel = TFLiteModel(assets, Constants.LSTM_MODEL_PATH, Constants.LSTM_LABEL_PATH, 8)
+
 
         // get the accel fields
         val accel_x = findViewById<TextView>(R.id.live_x_accel_data)
@@ -80,10 +85,11 @@ class ActivityRecognitionActivity : AppCompatActivity() {
                     val mag = sqrt((x*x + y*y + z*z).toDouble())
 
                     // TFLite - stuff
-                    accelData.pushNewData(x, y, z)
-                    val predictions = tfLiteModel.classify(accelData)
-                    val confidence = predictions[0].maxOrNull()?.times(100)?.roundToInt()
-                    updateUI(tfLiteModel.getLabelText(predictions), confidence)
+                    lstmData.pushNewData(x, y, z)
+                    val lstmPrediction = lstmModel.classify(lstmData)
+                    val lstmConfidence = lstmPrediction[0].maxOrNull()?.times(100)?.roundToInt()
+                    updateUI(lstmModel.getLabelText(lstmPrediction), lstmConfidence)
+                    updateAllPredictions(lstmPrediction[0])
 
 
                     //  ---  Graph  ---
@@ -177,8 +183,67 @@ class ActivityRecognitionActivity : AppCompatActivity() {
 
     fun updateUI(prediction: String, confidence: Int?){
         runOnUiThread{
-            predictionText.text = prediction
-            confidenceText.text = "$confidence %"
+            predictionProgressBar.progress = confidence as Int
+            when(prediction.toLowerCase(Locale.ROOT)){
+                "climbing stairs" -> {
+                    predictionImage.setImageResource(R.drawable.ic_stairs_up)
+                }
+                "descending stairs" -> {
+                    predictionImage.setImageResource(R.drawable.ic_stairs_down)
+                }
+                "running" -> {
+                    predictionImage.setImageResource(R.drawable.ic_baseline_directions_run_24)
+                }
+                "standing" -> {
+                    predictionImage.setImageResource(R.drawable.ic_baseline_accessibility_24)
+                }
+                "walking at normal speed" -> {
+                    predictionImage.setImageResource(R.drawable.ic_baseline_directions_walk_24)
+                }
+                "lying down on stomach" -> {
+                    predictionImage.setImageResource(R.drawable.ic_lying_front)
+                }
+                "lying down on back" -> {
+                    predictionImage.setImageResource(R.drawable.ic_lying_back)
+                }
+                "sitting" -> {
+                    predictionImage.setImageResource(R.drawable.ic_sitting)
+                }
+            }
+
+
+        }
+    }
+
+    private fun updateAllPredictions(preds : FloatArray){
+        runOnUiThread {
+            val climbingProb = (preds[0]*100).toInt()
+            val descendingProb = (preds[1]*100).toInt()
+            val walkProb = (preds[2]*100).toInt()
+            val runProb = (preds[3]*100).toInt()
+            val standProb = (preds[4]*100).toInt()
+            val layFrontProb = (preds[5]*100).toInt()
+            val layBackProb = (preds[6]*100).toInt()
+            val sittingProb = (preds[7]*100).toInt()
+
+
+            val climbingProgress = findViewById<ProgressBar>(R.id.climbing_stairs_prediction_progress)
+            val descendingProgress = findViewById<ProgressBar>(R.id.descending_stairs_prediction_progress)
+            val walkingProgress = findViewById<ProgressBar>(R.id.walking_prediction_progress)
+            val runningProgress = findViewById<ProgressBar>(R.id.running_prediction_progress)
+            val standingProgress = findViewById<ProgressBar>(R.id.standing_prediction_progress)
+            val layFrontProgress = findViewById<ProgressBar>(R.id.lying_front_progress)
+            val layBackProgress = findViewById<ProgressBar>(R.id.lying_back_prediction_progress)
+            val sittingProgress = findViewById<ProgressBar>(R.id.sitting_prediction_progress)
+
+            climbingProgress.progress = climbingProb
+            descendingProgress.progress = descendingProb
+            walkingProgress.progress = walkProb
+            runningProgress.progress = runProb
+            standingProgress.progress = standProb
+            layFrontProgress.progress = layFrontProb
+            layBackProgress.progress = layBackProb
+            sittingProgress.progress = sittingProb
         }
     }
 

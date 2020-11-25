@@ -10,14 +10,14 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
-import android.util.Log
-import android.widget.TextView
+import android.widget.ImageView
+import android.widget.ProgressBar
 import com.example.pdiot_cw3.utils.Constants
-import kotlinx.android.synthetic.main.activity_thingy_recognition.*
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
-import kotlin.math.max
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 private val TAG = ThingyRecognition::class.java.simpleName
@@ -27,8 +27,8 @@ class ThingyRecognition : AppCompatActivity(){
     private var outputTensor = FloatArray(3)
 
 
-    lateinit var predictionText: TextView
-    lateinit var confidenceText: TextView
+    lateinit var predictionProgress: ProgressBar
+    lateinit var predictionImage: ImageView
 
     lateinit var looper: Looper
 
@@ -44,8 +44,8 @@ class ThingyRecognition : AppCompatActivity(){
 
         labelList = this.loadLabelList(assets, Constants.LABEL_PATH)
 
-        predictionText = findViewById(R.id.thingy_prediction_text)
-        confidenceText = findViewById(R.id.thingy_confidence_text)
+        predictionProgress = findViewById(R.id.predicted_activity)
+        predictionImage = findViewById(R.id.predicted_activity_logo)
 
         thingyPredictionReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -91,8 +91,35 @@ class ThingyRecognition : AppCompatActivity(){
         val maxIdx = getMaxIdx()
         val labelText = labelList[maxIdx]
         runOnUiThread{
-            thingy_prediction_text.text = labelText
-            thingy_confidence_text.text = "${(outputTensor[maxIdx] * 100).toInt()} %"
+            predictionProgress.progress = (outputTensor[maxIdx] * 100).toInt()
+            when(labelText.toLowerCase(Locale.ROOT)){
+                "running" -> {
+                    predictionImage.setImageResource(R.drawable.ic_baseline_directions_run_24)
+                }
+                "standing" -> {
+                    predictionImage.setImageResource(R.drawable.ic_baseline_accessibility_24)
+                }
+                "walking at normal speed" -> {
+                    predictionImage.setImageResource(R.drawable.ic_baseline_directions_walk_24)
+                }
+            }
+        }
+        updateAllPredictions()
+    }
+
+    private fun updateAllPredictions(){
+        runOnUiThread {
+            val walkProb = (outputTensor[0]*100).toInt()
+            val runProb = (outputTensor[1]*100).toInt()
+            val standProb = (outputTensor[2]*100).toInt()
+
+            val walkingProgress = findViewById<ProgressBar>(R.id.walking_prediction_progress)
+            val runningProgress = findViewById<ProgressBar>(R.id.running_prediction_progress)
+            val standingProgress = findViewById<ProgressBar>(R.id.standing_prediction_progress)
+
+            walkingProgress.progress = walkProb
+            runningProgress.progress = runProb
+            standingProgress.progress = standProb
         }
     }
 

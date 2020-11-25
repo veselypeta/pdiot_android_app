@@ -42,4 +42,7 @@ object Constants
     // TFLite constnat
     const val MODEL_PATH = "gyroscope_model.tflite"
     const val LABEL_PATH = "labels.txt"
+
+    const val LSTM_MODEL_PATH = "small_lstm.tflite"
+    const val LSTM_LABEL_PATH = "small_lsmt_labels.txt"
 }
