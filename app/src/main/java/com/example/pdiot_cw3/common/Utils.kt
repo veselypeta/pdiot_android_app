@@ -112,4 +112,21 @@ object Utils {
         }
         return false
     }
+
+    fun processThingyPacket(data: ByteArray): FloatArray{
+        val packet = FloatArray(3)
+        for(i in 0 until 3){
+            packet[i] = unsignedShortToInt(data[(2*i)], data[(2*i) + 1]).toFloat() / 1000
+        }
+        return packet
+    }
+
+    private fun unsignedShortToInt (byte1: Byte, byte2: Byte): Int{
+        val t1 = byte1.toInt() and 255
+        val t2 = byte2.toInt() and 255
+
+        val l = t2 shl 8
+        val r = l or t1
+        return r
+    }
 }

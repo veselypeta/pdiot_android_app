@@ -17,11 +17,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.pdiot_cw3.bluetooth.BluetoothService
 import com.example.pdiot_cw3.bluetooth.ConnectBluetoth
-import com.example.pdiot_cw3.bluetooth.ThingyBluetoothService
+import com.example.pdiot_cw3.bluetooth.ThingyRxConnectService
 import com.example.pdiot_cw3.utils.Constants
-import no.nordicsemi.android.thingylib.ThingyListener
-import no.nordicsemi.android.thingylib.ThingyListenerHelper
-import no.nordicsemi.android.thingylib.ThingySdkManager
 import com.example.pdiot_cw3.common.Utils.isServiceRunning
 import com.google.android.material.snackbar.Snackbar
 
@@ -59,149 +56,9 @@ class MainActivity : AppCompatActivity() {
     var readStoragePermissionGranted = false
     var writeStoragePermissionGranted = false
 
-    /*
-    // Thingylib stuff
-    lateinit var thingySdkManager: ThingySdkManager
-    private val mThingyListener = object : ThingyListener {
-        override fun onDeviceConnected(device: BluetoothDevice?, connectionState: Int) {
-            thingyStatusText.text = "Thingy status: Connected"
-            Log.i("thingyListener", "------ Device Connected!")
-        }
-
-        override fun onDeviceDisconnected(device: BluetoothDevice?, connectionState: Int) {
-            thingyStatusText.text = "Thingy status: Disconnected"
-            Log.i("thingyListener", "------- Device Disconnected!")
-        }
-
-        override fun onServiceDiscoveryCompleted(device: BluetoothDevice?) {
-            Log.i("thingyListener", "Service Discovery Completed!")
-            thingySdkManager.enableMotionNotifications(device, true)
-        }
-
-        override fun onBatteryLevelChanged(bluetoothDevice: BluetoothDevice?, batteryLevel: Int) {}
-
-        override fun onTemperatureValueChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            temperature: String?
-        ) {}
-
-        override fun onPressureValueChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            pressure: String?
-        ) {}
-
-        override fun onHumidityValueChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            humidity: String?
-        ) {}
-
-        override fun onAirQualityValueChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            eco2: Int,
-            tvoc: Int
-        ) {}
-
-        override fun onColorIntensityValueChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            red: Float,
-            green: Float,
-            blue: Float,
-            alpha: Float
-        ) {}
-
-        override fun onButtonStateChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            buttonState: Int
-        ) {}
-
-        override fun onTapValueChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            direction: Int,
-            count: Int
-        ) {}
-
-        override fun onOrientationValueChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            orientation: Int
-        ) {}
-
-        override fun onQuaternionValueChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            w: Float,
-            x: Float,
-            y: Float,
-            z: Float
-        ) {}
-
-        override fun onPedometerValueChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            steps: Int,
-            duration: Long
-        ) {}
-
-        override fun onAccelerometerValueChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            x: Float,
-            y: Float,
-            z: Float
-        ) {
-        }
-
-        override fun onGyroscopeValueChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            x: Float,
-            y: Float,
-            z: Float
-        ) {}
-
-        override fun onCompassValueChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            x: Float,
-            y: Float,
-            z: Float
-        ) {}
-
-        override fun onEulerAngleChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            roll: Float,
-            pitch: Float,
-            yaw: Float
-        ) {}
-
-        override fun onRotationMatrixValueChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            matrix: ByteArray?
-        ) {}
-
-        override fun onHeadingValueChangedEvent(bluetoothDevice: BluetoothDevice?, heading: Float) {}
-
-        override fun onGravityVectorChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            x: Float,
-            y: Float,
-            z: Float
-        ) {}
-
-        override fun onSpeakerStatusValueChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            status: Int
-        ) {}
-
-        override fun onMicrophoneValueChangedEvent(
-            bluetoothDevice: BluetoothDevice?,
-            data: ByteArray?
-        ) {}
-    }
-
-
-     */
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        //thingySdkManager = ThingySdkManager.getInstance()
 
         // initialise buttons
         connectRespekButton = findViewById(R.id.connect_respek_button)
@@ -241,9 +98,6 @@ class MainActivity : AppCompatActivity() {
         thingyStatusFilter.addAction(Constants.ACTION_GATT_DISCONNECTED)
         this.registerReceiver(thingyStatusReceiver, thingyStatusFilter)
 
-        // register listener
-        //ThingyListenerHelper.registerThingyListener(this, mThingyListener)
-
 
         permissionAlertDialog = AlertDialog.Builder(this)
         setupPermissions()
@@ -251,14 +105,6 @@ class MainActivity : AppCompatActivity() {
         setupRespekStatus()
         setupThingyStatus()
     }
-
-/*
-    override fun onDestroy() {
-        super.onDestroy()
-        ThingyListenerHelper.unregisterThingyListener(this, mThingyListener)
-    }
-
- */
 
     fun setupClickListeners() {
         // onclick start the connect bluetooth activity
@@ -375,7 +221,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setupThingyStatus() {
-        val isServiceRunning = isServiceRunning(ThingyBluetoothService::class.java as Class<Any>, applicationContext)
+        val isServiceRunning = isServiceRunning(ThingyRxConnectService::class.java as Class<Any>, applicationContext)
         Log.i("DEBUG: ", "isServiceRunning-Thingy = $isServiceRunning")
 
         val sharedPreferences = getSharedPreferences(Constants.PREFERENCES_FILE, Context.MODE_PRIVATE)
@@ -383,7 +229,7 @@ class MainActivity : AppCompatActivity() {
             thingyStatusText.text = "Thingy Status: Connecting..."
             if(!isServiceRunning){
                 Log.i(TAG, "Starting Thingy BLE Service")
-                val simpleIntent = Intent(this, ThingyBluetoothService::class.java)
+                val simpleIntent = Intent(this, ThingyRxConnectService::class.java)
                 this.startService(simpleIntent)
             }
         } else {

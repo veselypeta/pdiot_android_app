@@ -84,6 +84,7 @@
         </service>
         <service android:name=".bluetooth.ThingyService" />
         <service android:name=".bluetooth.ThingyBluetoothService" />
+        <service android:name=".bluetooth.ThingyRxConnectService" />
     </application>
 
 </manifest>

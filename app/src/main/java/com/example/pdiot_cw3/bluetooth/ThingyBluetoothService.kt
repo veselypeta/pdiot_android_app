@@ -13,9 +13,9 @@ import com.example.pdiot_cw3.utils.Constants
 import java.util.*
 
 
-private val TAG = ThingyBluetoothService::class.java.simpleName
 
 class ThingyBluetoothService : Service() {
+    private val TAG = ThingyBluetoothService::class.java.simpleName
 
     lateinit var sharedPreferences: SharedPreferences
 
@@ -137,6 +137,9 @@ class ThingyBluetoothService : Service() {
             thingyDataIntent.putExtra(Constants.EXTRA_THINGY_DATA_ONE, processedData[1])
             thingyDataIntent.putExtra(Constants.EXTRA_THINGY_DATA_TWO, processedData[2])
             sendBroadcast(thingyDataIntent)
+
+            val thingyFoundIntent = Intent(Constants.ACTION_GATT_CONNECTED)
+            sendBroadcast(thingyFoundIntent)
 
             Log.i(TAG, "Sending BLE Data Broadcast")
         }
