@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import com.example.pdiot_cw3.common.JavaUtils
 import com.example.pdiot_cw3.common.Utils
 import com.example.pdiot_cw3.utils.Constants
 import com.polidea.rxandroidble2.RxBleClient
@@ -19,6 +20,7 @@ class BluetoothService: Service() {
 
     lateinit var rxBleClient: RxBleClient
     lateinit var respekUUID:String
+    var respekVersion: Int = 0
     var respekFound = false
     var respeckDevice: RxBleDevice? = null
 
@@ -29,6 +31,8 @@ class BluetoothService: Service() {
         super.onCreate()
         val sharedPreferences = getSharedPreferences(Constants.PREFERENCES_FILE, Context.MODE_PRIVATE)
         respekUUID = sharedPreferences.getString(Constants.RESPECK_MAC_ADDRESS_PREF,"").toString()
+        respekVersion = sharedPreferences.getInt(Constants.RESPECK_VERSION, 0)
+        Log.i("RESPEK VERSION _____", "$respekVersion")
     }
 
     override fun onDestroy() {
@@ -100,7 +104,8 @@ class BluetoothService: Service() {
         }
             ?.flatMap { it }
             ?.subscribe({
-                Utils.processRESpeckPacket(it, 6, this)
+                JavaUtils.processRESpeckPacket(it, respekVersion, this)
+//                Utils.processRESpeckPacket(it, 6, this)
                 val respekFoundIntent = Intent(Constants.ACTION_RESPECK_CONNECTED)
                 sendBroadcast(respekFoundIntent)
                 interval++

@@ -134,13 +134,13 @@
         android:id="@+id/row_two_all_predictions"
         >
         <RelativeLayout
-            android:id="@+id/climbing_stairs_prediction"
+            android:id="@+id/lying_back_prediction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@id/descending_stairs_prediction"
+            android:layout_alignEnd="@id/sitting_prediction"
             >
             <ProgressBar
-                android:id="@+id/climbing_stairs_prediction_progress"
+                android:id="@+id/lying_back_prediction_progress"
                 android:layout_width="135dp"
                 android:layout_height="135dp"
                 style="?android:progressBarStyleHorizontal"
@@ -152,42 +152,42 @@
                 android:progressDrawable="@drawable/custom_progressbar_drawable"
                 />
             <ImageView
-                android:id="@+id/climbing_stairs_prediction_logo"
+                android:id="@+id/lying_back_prediction_logo"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:src="@drawable/ic_stairs_up"
+                android:src="@drawable/ic_lying_back"
                 android:layout_centerInParent="true"/>
         </RelativeLayout>
         <RelativeLayout
-            android:id="@+id/descending_stairs_prediction"
+            android:id="@+id/sitting_prediction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             >
             <ProgressBar
-                android:id="@+id/descending_stairs_prediction_progress"
+                android:id="@+id/sitting_prediction_progress"
                 android:layout_width="135dp"
                 android:layout_height="135dp"
                 style="?android:progressBarStyleHorizontal"
                 android:layout_centerInParent="true"
+                android:indeterminate="false"
                 android:max="100"
                 android:min="0"
                 android:progress="60"
-                android:indeterminate="false"
                 android:progressDrawable="@drawable/custom_progressbar_drawable"
                 />
             <ImageView
-                android:id="@+id/descending_stairs_prediction_logo"
+                android:id="@+id/sitting_prediction_logo"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:src="@drawable/ic_stairs_down"
+                android:src="@drawable/ic_sitting"
                 android:layout_centerInParent="true"/>
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/lying_front"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@id/descending_stairs_prediction"
+            android:layout_alignStart="@id/sitting_prediction"
             >
             <ProgressBar
                 android:id="@+id/lying_front_progress"
@@ -217,55 +217,6 @@
         app:layout_constraintTop_toBottomOf="@+id/row_two_all_predictions"
         >
 
-        <RelativeLayout
-            android:id="@+id/lying_back_prediction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            >
-            <ProgressBar
-                android:id="@+id/lying_back_prediction_progress"
-                android:layout_width="135dp"
-                android:layout_height="135dp"
-                style="?android:progressBarStyleHorizontal"
-                android:layout_centerInParent="true"
-                android:indeterminate="false"
-                android:max="100"
-                android:min="0"
-                android:progress="60"
-                android:progressDrawable="@drawable/custom_progressbar_drawable"
-                />
-            <ImageView
-                android:id="@+id/lying_back_prediction_logo"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:src="@drawable/ic_lying_back"
-                android:layout_centerInParent="true"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/sitting_prediction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            >
-            <ProgressBar
-                android:id="@+id/sitting_prediction_progress"
-                android:layout_width="135dp"
-                android:layout_height="135dp"
-                style="?android:progressBarStyleHorizontal"
-                android:layout_centerInParent="true"
-                android:indeterminate="false"
-                android:max="100"
-                android:min="0"
-                android:progress="60"
-                android:progressDrawable="@drawable/custom_progressbar_drawable"
-                />
-            <ImageView
-                android:id="@+id/sitting_prediction_logo"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:src="@drawable/ic_sitting"
-                android:layout_centerInParent="true"/>
-        </RelativeLayout>
 
     </RelativeLayout>
 

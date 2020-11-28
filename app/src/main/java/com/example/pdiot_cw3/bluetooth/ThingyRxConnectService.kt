@@ -10,7 +10,6 @@ import com.example.pdiot_cw3.utils.Constants
 import com.polidea.rxandroidble2.RxBleClient
 import com.polidea.rxandroidble2.RxBleConnection
 import com.polidea.rxandroidble2.RxBleDevice
-import com.polidea.rxandroidble2.RxBleScanResult
 import com.polidea.rxandroidble2.scan.ScanResult
 import io.reactivex.disposables.Disposable
 import com.polidea.rxandroidble2.scan.ScanSettings

@@ -234,7 +234,7 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             Log.i("sharepref", "No Thingy seen before, must pair first")
-            respekStatusText.text = "Thingy status: Unpaired"
+            thingyStatusText.text = "Thingy status: Unpaired"
         }
     }
 

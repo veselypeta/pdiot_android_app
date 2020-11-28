@@ -12,7 +12,6 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.example.pdiot_cw3.common.AccelerometerData
 import com.example.pdiot_cw3.common.DelayRespek
 import com.example.pdiot_cw3.common.RespekData
 import com.example.pdiot_cw3.common.TFLiteModel
@@ -41,7 +40,6 @@ class ActivityRecognitionActivity : AppCompatActivity() {
     // receive broadcast
     lateinit var accelDataReceiver: BroadcastReceiver
     var respekDataFilter = IntentFilter(Constants.ACTION_INNER_RESPECK_BROADCAST)
-    var lstmData = AccelerometerData(20, 3)
     lateinit var looper: Looper
 
     // global graph variables
@@ -55,7 +53,8 @@ class ActivityRecognitionActivity : AppCompatActivity() {
 
 
     // new tflite model
-    lateinit var lstmModel: TFLiteModel
+//    lateinit var lstmModel: TFLiteModel
+    lateinit var tinyLstmModel: TFLiteModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +63,8 @@ class ActivityRecognitionActivity : AppCompatActivity() {
         predictionProgressBar = findViewById(R.id.predicted_activity)
         predictionImage = findViewById(R.id.predicted_activity_logo)
 
-        lstmModel = TFLiteModel(assets, Constants.LSTM_MODEL_PATH, Constants.LSTM_LABEL_PATH, 8)
+//        lstmModel = TFLiteModel(assets, Constants.LSTM_MODEL_PATH, Constants.LSTM_LABEL_PATH, 8, 20)
+        tinyLstmModel = TFLiteModel(assets, "best_tiny_lstm.tflite", "tiny_lstm_labels.txt", 6, 50 )
 
 
         // get the accel fields
@@ -84,12 +84,19 @@ class ActivityRecognitionActivity : AppCompatActivity() {
 
                     val mag = sqrt((x*x + y*y + z*z).toDouble())
 
+                    // new tflite model
+                    tinyLstmModel.pushNewData(x, y, z)
+                    val tinyLstmPerdictions = tinyLstmModel.classify()
+                    val tinyLstmConfidence = tinyLstmPerdictions[0].maxOrNull()?.times(100)?.roundToInt()
+                    val label = tinyLstmModel.getLabelText(tinyLstmPerdictions)
+                    updateUI(tinyLstmModel.getLabelText(tinyLstmPerdictions), tinyLstmConfidence)
+                    updateAllPredictions(tinyLstmPerdictions[0])
+                    Log.i("Tiny LSTM MODEL", label)
+
                     // TFLite - stuff
-                    lstmData.pushNewData(x, y, z)
-                    val lstmPrediction = lstmModel.classify(lstmData)
-                    val lstmConfidence = lstmPrediction[0].maxOrNull()?.times(100)?.roundToInt()
-                    updateUI(lstmModel.getLabelText(lstmPrediction), lstmConfidence)
-                    updateAllPredictions(lstmPrediction[0])
+//                    lstmModel.pushNewData(x, y, z)
+//                    val lstmPrediction = lstmModel.classify()
+//                    val lstmConfidence = lstmPrediction[0].maxOrNull()?.times(100)?.roundToInt()
 
 
                     //  ---  Graph  ---
@@ -185,12 +192,12 @@ class ActivityRecognitionActivity : AppCompatActivity() {
         runOnUiThread{
             predictionProgressBar.progress = confidence as Int
             when(prediction.toLowerCase(Locale.ROOT)){
-                "climbing stairs" -> {
-                    predictionImage.setImageResource(R.drawable.ic_stairs_up)
-                }
-                "descending stairs" -> {
-                    predictionImage.setImageResource(R.drawable.ic_stairs_down)
-                }
+//                "climbing stairs" -> {
+//                    predictionImage.setImageResource(R.drawable.ic_stairs_up)
+//                }
+//                "descending stairs" -> {
+//                    predictionImage.setImageResource(R.drawable.ic_stairs_down)
+//                }
                 "running" -> {
                     predictionImage.setImageResource(R.drawable.ic_baseline_directions_run_24)
                 }
@@ -217,18 +224,18 @@ class ActivityRecognitionActivity : AppCompatActivity() {
 
     private fun updateAllPredictions(preds : FloatArray){
         runOnUiThread {
-            val climbingProb = (preds[0]*100).toInt()
-            val descendingProb = (preds[1]*100).toInt()
-            val walkProb = (preds[2]*100).toInt()
-            val runProb = (preds[3]*100).toInt()
-            val standProb = (preds[4]*100).toInt()
-            val layFrontProb = (preds[5]*100).toInt()
-            val layBackProb = (preds[6]*100).toInt()
-            val sittingProb = (preds[7]*100).toInt()
+//            val climbingProb = (preds[0]*100).toInt()
+//            val descendingProb = (preds[1]*100).toInt()
+            val walkProb = (preds[0]*100).toInt()
+            val runProb = (preds[1]*100).toInt()
+            val standProb = (preds[2]*100).toInt()
+            val layFrontProb = (preds[3]*100).toInt()
+            val layBackProb = (preds[4]*100).toInt()
+            val sittingProb = (preds[5]*100).toInt()
 
 
-            val climbingProgress = findViewById<ProgressBar>(R.id.climbing_stairs_prediction_progress)
-            val descendingProgress = findViewById<ProgressBar>(R.id.descending_stairs_prediction_progress)
+//            val climbingProgress = findViewById<ProgressBar>(R.id.climbing_stairs_prediction_progress)
+//            val descendingProgress = findViewById<ProgressBar>(R.id.descending_stairs_prediction_progress)
             val walkingProgress = findViewById<ProgressBar>(R.id.walking_prediction_progress)
             val runningProgress = findViewById<ProgressBar>(R.id.running_prediction_progress)
             val standingProgress = findViewById<ProgressBar>(R.id.standing_prediction_progress)
@@ -236,8 +243,8 @@ class ActivityRecognitionActivity : AppCompatActivity() {
             val layBackProgress = findViewById<ProgressBar>(R.id.lying_back_prediction_progress)
             val sittingProgress = findViewById<ProgressBar>(R.id.sitting_prediction_progress)
 
-            climbingProgress.progress = climbingProb
-            descendingProgress.progress = descendingProb
+//            climbingProgress.progress = climbingProb
+//            descendingProgress.progress = descendingProb
             walkingProgress.progress = walkProb
             runningProgress.progress = runProb
             standingProgress.progress = standProb

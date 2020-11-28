@@ -7,10 +7,11 @@ import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 import kotlin.collections.ArrayList
 
-class TFLiteModel(assetManager: AssetManager, modelPath: String, labelPath: String, private val outputClasses: Int) {
+class TFLiteModel(assetManager: AssetManager, modelPath: String, labelPath: String, private val outputClasses: Int, inputTensorLength: Int) {
 
     private var interpreter: Interpreter
     private var labelList: List<String>
+    private val inputTensorData = AccelerometerData(inputTensorLength)
 
     init {
         interpreter = Interpreter(this.loadModelFile(assetManager, modelPath), Interpreter.Options())
@@ -43,9 +44,9 @@ class TFLiteModel(assetManager: AssetManager, modelPath: String, labelPath: Stri
         return labelList
     }
 
-    fun classify(accelerometerData: AccelerometerData): Array<FloatArray>{
+    fun classify(): Array<FloatArray>{
         val output = arrayOf(FloatArray(outputClasses))
-        interpreter.run(accelerometerData.getData(), output)
+        interpreter.run(inputTensorData.getData(), output)
         return output
     }
 
@@ -59,5 +60,9 @@ class TFLiteModel(assetManager: AssetManager, modelPath: String, labelPath: Stri
             }
         }
         return labelList[maxIdx]
+    }
+
+    fun pushNewData(x: Float, y: Float, z: Float){
+        inputTensorData.pushNewData(x, y, z)
     }
 }
