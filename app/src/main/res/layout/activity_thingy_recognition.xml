@@ -123,6 +123,63 @@
 
 
     </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/all_predictions"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/row_two_all_predictions"
+        >
+        <RelativeLayout
+            android:id="@+id/sitting_prediction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            >
+            <ProgressBar
+                android:id="@+id/sitting_prediction_progress"
+                android:layout_width="135dp"
+                android:layout_height="135dp"
+                style="?android:progressBarStyleHorizontal"
+                android:layout_centerInParent="true"
+                android:indeterminate="false"
+                android:max="100"
+                android:min="0"
+                android:progress="60"
+                android:progressDrawable="@drawable/custom_progressbar_drawable"
+                />
+            <ImageView
+                android:id="@+id/sitting_prediction_logo"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/ic_sitting"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/up_down_stairs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/sitting_prediction"
+            >
+            <ProgressBar
+                android:id="@+id/up_down_stairs_progress"
+                android:layout_width="135dp"
+                android:layout_height="135dp"
+                style="?android:progressBarStyleHorizontal"
+                android:layout_centerInParent="true"
+                android:max="100"
+                android:min="0"
+                android:indeterminate="false"
+                android:progress="60"
+                android:progressDrawable="@drawable/custom_progressbar_drawable"/>
+            <ImageView
+                android:id="@+id/up_down_stairs_logo"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_up_down_stair"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

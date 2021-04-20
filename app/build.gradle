@@ -23,7 +23,9 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.benchmark.junit4.AndroidBenchmarkRunner"
+
+        testInstrumentationRunnerArgument 'androidx.benchmark.suppressErrors', 'EMULATOR,LOW_BATTERY,DEBUGGABLE,ACTIVITY-MISSING'
     }
 
     buildTypes {
@@ -34,6 +36,9 @@ android {
     }
     buildFeatures {
         mlModelBinding true
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 }
 
@@ -52,4 +57,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation "com.polidea.rxandroidble2:rxandroidble:1.11.1"
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    androidTestImplementation "androidx.benchmark:benchmark-junit4:1.0.0"
+    androidTestImplementation 'com.android.support:support-annotations:24.0.0'
+    androidTestImplementation 'com.android.support.test:runner:0.5'
 }

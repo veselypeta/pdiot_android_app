@@ -117,9 +117,18 @@ class ThingyRecognition : AppCompatActivity(){
             val runningProgress = findViewById<ProgressBar>(R.id.running_prediction_progress)
             val standingProgress = findViewById<ProgressBar>(R.id.standing_prediction_progress)
 
+            val upDownStairsProgress = findViewById<ProgressBar>(R.id.up_down_stairs_progress)
+            val sittingProgress = findViewById<ProgressBar>(R.id.sitting_prediction_progress)
+
+
             walkingProgress.progress = walkProb
             runningProgress.progress = runProb
             standingProgress.progress = standProb
+
+            upDownStairsProgress.progress = 2
+            sittingProgress.progress = 3
+
+
         }
     }
 
